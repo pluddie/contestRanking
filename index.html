@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>即時排名</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --teal:#0cbe90;
+  --blue:#3a9fff;
+  --purple:#7c6aff;
+  --gold:#e8c76a;
+  --silver:#9ab1cc;
+  --bronze:#c0845a;
+  --text-1:#eef4ff;
+  --text-2:#8aaccc;
+  --text-3:#3d5570;
+  --danger:#ff6060;
+  --r-sm:10px;
+  --r-md:16px;
+  --r-lg:22px;
+  --r-xl:32px;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Inter','Noto Sans TC',sans-serif;
+  color:var(--text-1);
+  min-height:100vh;
+  overflow-x:hidden;
+  background:#020a14;
+}
+
+/* ═══ LAYERED GRADIENT BG ═══ */
+.bg-canvas{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(60,120,255,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 5%,   rgba(12,190,144,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,  rgba(124,106,255,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #020d1c 40%, #010812 100%);
+}
+/* floating blobs */
+.bg-canvas::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle 320px at 20% 35%,  rgba(12,190,144,0.09) 0%, transparent 70%),
+    radial-gradient(circle 280px at 80% 65%,  rgba(60,120,255,0.10) 0%, transparent 70%);
+  animation:blobdrift 18s ease-in-out infinite alternate;
+}
+@keyframes blobdrift{
+  0%  {transform:translate(0,0) scale(1)}
+  100%{transform:translate(30px,20px) scale(1.06)}
+}
+
+/* ═══ LAYOUT ═══ */
+.page{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:3rem 2rem 6rem}
+
+/* ═══ HEADER ═══ */
+.site-header{text-align:center;margin-bottom:3.5rem}
+
+.title-wrap{display:inline-flex;align-items:center;gap:14px;cursor:pointer;position:relative}
+.title-wrap:hover .title-edit-hint{opacity:1}
+.title-edit-hint{
+  position:absolute;right:-26px;top:50%;transform:translateY(-50%);
+  opacity:0;transition:opacity .2s;
+}
+.title-edit-hint svg{color:var(--text-3)}
+
+#siteTitle{
+  font-size:clamp(1.9rem,5vw,3rem);font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  background:linear-gradient(130deg,#eef4ff 25%,var(--teal) 80%,var(--blue) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.1;
+  border:none;background-color:transparent;
+  font-family:inherit;cursor:pointer;
+  text-align:center;width:auto;min-width:2ch;
+}
+#siteTitle:focus{outline:none;-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
+
+.header-accent{
+  width:80px;height:3px;margin:1rem auto 0;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--teal) 40%,var(--blue),transparent);
+}
+
+/* ═══ GLASS BLOCKS ═══ */
+.glass{
+  background:rgba(255,255,255,0.055);
+  backdrop-filter:blur(28px) saturate(160%);
+  -webkit-backdrop-filter:blur(28px) saturate(160%);
+  border-radius:var(--r-xl);
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+.glass-inner{
+  background:rgba(255,255,255,0.035);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-radius:var(--r-lg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+/* ═══ SECTION LABEL ═══ */
+.sec-label{
+  font-size:10px;font-weight:600;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:1.6rem;
+}
+
+/* ══════════════════════════
+   RANKING CARD
+══════════════════════════ */
+.ranking-card{padding:2.5rem 3rem;margin-bottom:2rem}
+
+.rank-table{width:100%;border-collapse:collapse}
+.rank-thead th{
+  font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text-3);padding:.5rem 1.2rem 1.4rem;text-align:left;
+}
+.rank-thead th:first-child{padding-left:0;text-align:center;width:58px}
+.rank-thead th.th-avg{text-align:right;padding-right:0;min-width:110px}
+
+/* rows */
+.rank-row td{
+  padding:1.4rem 1.2rem;vertical-align:middle;
+  border-top:1px solid rgba(255,255,255,0.045);
+  transition:background .15s;
+}
+.rank-row:first-child td{border-top:1px solid rgba(255,255,255,0.07)}
+.rank-row td:first-child{padding-left:0}
+.rank-row td:last-child{padding-right:0}
+.rank-row:hover td{background:rgba(255,255,255,0.028)}
+
+/* rank badge */
+.rank-badge{
+  width:38px;height:38px;border-radius:50%;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.rb-gold  {background:linear-gradient(135deg,rgba(232,199,106,.3),rgba(232,199,106,.1));color:var(--gold)}
+.rb-silver{background:linear-gradient(135deg,rgba(154,177,204,.3),rgba(154,177,204,.1));color:var(--silver)}
+.rb-bronze{background:linear-gradient(135deg,rgba(192,132,90,.3),rgba(192,132,90,.1));color:var(--bronze)}
+.rb-other {background:rgba(255,255,255,.05);color:var(--text-2)}
+
+/* athlete name */
+.athlete-name-cell{font-size:15px;font-weight:500;color:var(--text-1)}
+.medal-icon{margin-right:6px}
+
+/* scores in table — plain white, no chip border */
+.score-list{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline}
+.score-item{
+  font-size:15px;font-weight:400;color:rgba(255,255,255,.75);
+  white-space:nowrap;display:flex;align-items:center;gap:5px;
+}
+.score-judge-name{font-size:10px;color:var(--text-3);letter-spacing:.08em}
+
+/* avg */
+.avg-cell{text-align:right}
+.avg-num{
+  font-size:22px;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.avg-denom{font-size:12px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
+
+/* edit pen on row hover */
+.row-edit-btn{
+  background:none;border:none;padding:5px;cursor:pointer;
+  color:var(--text-3);border-radius:var(--r-sm);transition:color .15s,background .15s;
+  display:flex;align-items:center;
+}
+.rank-row:hover .row-edit-btn{color:var(--text-2)}
+.row-edit-btn:hover{background:rgba(255,255,255,.08);color:var(--text-1)!important}
+
+/* empty */
+.rank-empty td{
+  text-align:center;padding:4rem;color:var(--text-3);
+  font-size:13px;letter-spacing:.08em;border-top:none!important;
+}
+
+/* ══════════════════════════
+   EDIT FAB
+══════════════════════════ */
+.fab{
+  position:fixed;right:2rem;bottom:2.5rem;z-index:50;
+  display:flex;align-items:center;gap:10px;
+  padding:13px 22px;border:none;cursor:pointer;
+  border-radius:50px;font-family:inherit;font-size:14px;font-weight:600;
+  letter-spacing:.06em;color:#fff;
+  background:linear-gradient(135deg,#0a9e78,#1870c8);
+  box-shadow:0 6px 30px rgba(12,190,144,0.38),0 2px 8px rgba(0,0,0,0.3);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+.fab:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(12,190,144,0.45),0 3px 12px rgba(0,0,0,0.35)}
+.fab:active{transform:scale(.97)}
+.fab-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.6);
+  transition:background .2s;
+}
+.fab.active .fab-dot{background:#fff}
+
+/* ══════════════════════════
+   SLIDE PANEL
+══════════════════════════ */
+.panel-overlay{
+  position:fixed;inset:0;z-index:40;
+  background:rgba(1,8,20,0.55);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.panel-overlay.open{opacity:1;pointer-events:all}
+
+.slide-panel{
+  position:fixed;right:0;top:0;bottom:0;z-index:45;
+  width:min(480px,100vw);
+  background:rgba(4,18,36,0.88);
+  backdrop-filter:blur(36px) saturate(180%);
+  -webkit-backdrop-filter:blur(36px) saturate(180%);
+  box-shadow:-8px 0 60px rgba(0,0,0,0.55),inset 1px 0 0 rgba(255,255,255,.07);
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.25,.8,.25,1);
+  overflow-y:auto;display:flex;flex-direction:column;
+  scrollbar-width:thin;scrollbar-color:var(--text-3) transparent;
+}
+.slide-panel.open{transform:translateX(0)}
+
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:2rem 2rem 1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:sticky;top:0;
+  background:rgba(4,18,36,0.92);
+  backdrop-filter:blur(20px);z-index:2;
+}
+.panel-head h2{font-size:16px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-1)}
+.panel-close{
+  background:rgba(255,255,255,.07);border:none;border-radius:50%;
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-2);cursor:pointer;transition:background .15s,color .15s;
+}
+.panel-close:hover{background:rgba(255,255,255,.13);color:var(--text-1)}
+
+.panel-body{padding:2rem;flex:1;display:flex;flex-direction:column;gap:2.5rem}
+
+/* ── Panel section ── */
+.panel-section{}
+.panel-sec-label{
+  font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-3);margin-bottom:1.2rem;
+}
+
+/* judge / athlete item in panel */
+.edit-list{display:flex;flex-direction:column;gap:8px}
+.edit-item{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.04);
+  border-radius:var(--r-md);
+  padding:11px 14px;
+}
+.edit-item-icon{color:var(--text-3);flex-shrink:0;display:flex}
+.edit-item-input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text-1);font-size:14px;font-family:inherit;
+  min-width:0;
+}
+.edit-item-input::placeholder{color:var(--text-3)}
+.edit-item-input:focus{color:var(--teal)}
+
+.item-del-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--text-3);transition:color .15s;padding:2px 4px;font-size:15px;line-height:1;
+}
+.item-del-btn:hover{color:var(--danger)}
+
+.add-row-btn{
+  margin-top:10px;width:100%;
+  background:rgba(12,190,144,.09);
+  border:none;border-radius:var(--r-md);
+  padding:11px;color:var(--teal);font-size:13px;
+  letter-spacing:.08em;cursor:pointer;font-family:inherit;
+  transition:background .15s;
+}
+.add-row-btn:hover{background:rgba(12,190,144,.16)}
+
+/* ── Add athlete form ── */
+.add-form{display:flex;flex-direction:column;gap:12px}
+.form-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;display:block}
+.form-input{
+  width:100%;background:rgba(255,255,255,.05);
+  border:none;border-radius:var(--r-md);
+  padding:11px 16px;color:var(--text-1);font-size:14px;
+  outline:none;font-family:inherit;transition:background .15s;
+}
+.form-input:focus{background:rgba(255,255,255,.09)}
+.form-input::placeholder{color:var(--text-3)}
+
+.score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+
+.save-btn{
+  margin-top:4px;width:100%;border:none;border-radius:var(--r-md);
+  padding:13px;color:#fff;font-size:14px;font-weight:600;
+  letter-spacing:.06em;cursor:pointer;font-family:inherit;
+  background:linear-gradient(135deg,#0a9e78,#1870c8);
+  transition:opacity .15s,transform .1s;
+}
+.save-btn:hover{opacity:.9}
+.save-btn:active{transform:scale(.98)}
+
+.divider{height:1px;background:rgba(255,255,255,.05);margin:.5rem 0}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:640px){
+  .page{padding:2rem 1.2rem 5rem}
+  .ranking-card{padding:1.8rem 1.4rem}
+  .fab{right:1.2rem;bottom:1.8rem;padding:11px 18px;font-size:13px}
+  .rank-thead .th-scores{display:none}
+  .cell-scores{display:none}
+}
+@media(max-width:400px){
+  .ranking-card{padding:1.4rem 1rem}
+  .slide-panel{width:100vw}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="title-wrap" onclick="focusTitle()">
+      <input id="siteTitle" value="即時排名" spellcheck="false"
+        onblur="this.style.minWidth=''" oninput="autoWidth(this)" />
+      <span class="title-edit-hint">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </span>
+    </div>
+    <div class="header-accent"></div>
+  </header>
+
+  <!-- RANKING TABLE -->
+  <section class="glass ranking-card">
+    <p class="sec-label">排名總覽</p>
+    <div style="overflow-x:auto">
+      <table class="rank-table" id="rankTable">
+        <thead class="rank-thead">
+          <tr>
+            <th>排名</th>
+            <th>選手</th>
+            <th class="th-scores" id="thScores">評審分數</th>
+            <th class="th-avg">平均分數</th>
+          </tr>
+        </thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<!-- EDIT FAB -->
+<button class="fab" id="editFab" onclick="togglePanel()">
+  <span class="fab-dot"></span>
+  <span id="fabLabel">編輯</span>
+</button>
+
+<!-- OVERLAY -->
+<div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
+
+<!-- SLIDE PANEL -->
+<div class="slide-panel" id="slidePanel">
+  <div class="panel-head">
+    <h2>管理</h2>
+    <button class="panel-close" onclick="closePanel()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="panel-body">
+
+    <!-- 評審列表 -->
+    <div class="panel-section">
+      <p class="panel-sec-label">評審列表</p>
+      <div class="edit-list" id="judgeEditList"></div>
+      <button class="add-row-btn" onclick="addJudge()">＋ 新增評審</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 選手列表 -->
+    <div class="panel-section">
+      <p class="panel-sec-label">選手列表</p>
+      <div class="edit-list" id="athleteEditList"></div>
+      <button class="add-row-btn" onclick="showAddAthlete()">＋ 新增選手</button>
+    </div>
+
+    <!-- 新增選手展開區 -->
+    <div id="addAthleteForm" style="display:none">
+      <div class="divider" style="margin-bottom:1.5rem"></div>
+      <p class="panel-sec-label">新增選手</p>
+      <div class="add-form">
+        <div>
+          <label class="form-label">姓名</label>
+          <input class="form-input" id="newName" placeholder="選手姓名" />
+        </div>
+        <div>
+          <label class="form-label">評審分數</label>
+          <div class="score-grid" id="scoreInputGrid"></div>
+        </div>
+        <button class="save-btn" onclick="addAthlete()">確認新增</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let judges = ['評審 1', '評審 2', '評審 3'];
+let athletes = [
+  {id:1, name:'陳雅婷', scores:[9.2,8.8,9.5]},
+  {id:2, name:'林志明', scores:[8.5,9.1,8.9]},
+  {id:3, name:'王美玲', scores:[9.7,9.3,9.6]},
+  {id:4, name:'張偉恩', scores:[8.1,8.4,8.0]},
+];
+let nextId = 5;
+
+/* ── utils ── */
+function avg(s){ return s.length ? s.reduce((a,b)=>a+b,0)/s.length : 0 }
+
+function autoWidth(el){
+  const tmp = document.createElement('span');
+  tmp.style.cssText='position:absolute;visibility:hidden;white-space:pre;font:inherit;font-size:'+getComputedStyle(el).fontSize+';font-weight:'+getComputedStyle(el).fontWeight+';letter-spacing:'+getComputedStyle(el).letterSpacing;
+  tmp.textContent = el.value || el.placeholder;
+  document.body.appendChild(tmp);
+  el.style.width = (tmp.offsetWidth + 20) + 'px';
+  document.body.removeChild(tmp);
+}
+function focusTitle(){ const t=document.getElementById('siteTitle'); t.focus(); t.select(); }
+window.addEventListener('load', ()=>{ autoWidth(document.getElementById('siteTitle')); });
+
+/* ── Panel ── */
+let panelOpen = false;
+function togglePanel(){ panelOpen ? closePanel() : openPanel(); }
+function openPanel(){
+  panelOpen=true;
+  document.getElementById('slidePanel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('editFab').classList.add('active');
+  document.getElementById('fabLabel').textContent='關閉';
+  renderPanel();
+}
+function closePanel(){
+  panelOpen=false;
+  document.getElementById('slidePanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('editFab').classList.remove('active');
+  document.getElementById('fabLabel').textContent='編輯';
+}
+
+/* ── Render ranking ── */
+function renderRanking(){
+  const sorted = [...athletes].sort((a,b)=>avg(b.scores)-avg(a.scores));
+  const body = document.getElementById('rankBody');
+  if(!sorted.length){
+    body.innerHTML=`<tr class="rank-empty"><td colspan="4">尚未新增選手</td></tr>`;
+    return;
+  }
+  body.innerHTML = sorted.map((a,rank)=>{
+    const r=rank+1;
+    const bc = r===1?'rb-gold':r===2?'rb-silver':r===3?'rb-bronze':'rb-other';
+    const medal= r<=3?['🥇','🥈','🥉'][r-1]+' ':'';
+    const avgVal=avg(a.scores);
+    const scoreItems = a.scores.map((sc,i)=>`
+      <span class="score-item">
+        <span class="score-judge-name">${judges[i]||('J'+(i+1))}</span>
+        ${sc.toFixed(1)}
+      </span>`).join('');
+    return `
+    <tr class="rank-row" id="row_${a.id}">
+      <td style="text-align:center"><div class="rank-badge ${bc}">${r}</div></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="athlete-name-cell"><span class="medal-icon">${medal.trim()}</span> ${a.name}</span>
+          <button class="row-edit-btn" onclick="openEditRow(${a.id})" title="編輯此選手">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+        </div>
+      </td>
+      <td class="cell-scores"><div class="score-list">${scoreItems}</div></td>
+      <td class="avg-cell"><span class="avg-num">${avgVal.toFixed(2)}</span><span class="avg-denom"> / 10</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Inline row edit (overlay mini-form in table) ── */
+let editingRowId = null;
+function openEditRow(id){
+  if(editingRowId === id){ closeEditRow(); return; }
+  if(editingRowId !== null) closeEditRow();
+  editingRowId = id;
+  const a = athletes.find(x=>x.id===id);
+  const tr = document.getElementById('row_'+id);
+  if(!tr || !a) return;
+  const scoreInputs = judges.map((j,i)=>`
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <span style="font-size:10px;color:var(--text-3);letter-spacing:.1em">${j}</span>
+      <input class="form-input" id="ei_sc_${id}_${i}" type="number" value="${(a.scores[i]||0).toFixed(1)}" min="0" max="10" step="0.1"
+        style="padding:7px 10px;font-size:13px" />
+    </div>`).join('');
+  const editRow = document.createElement('tr');
+  editRow.id = 'editrow_'+id;
+  editRow.innerHTML=`
+    <td colspan="4" style="padding:0 1.2rem 1.2rem">
+      <div style="background:rgba(255,255,255,.05);border-radius:var(--r-lg);padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1">
+            <span style="font-size:10px;color:var(--text-3);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px">姓名</span>
+            <input class="form-input" id="ei_name_${id}" value="${a.name}" style="padding:8px 14px" />
+          </div>
+        </div>
+        <div>
+          <span style="font-size:10px;color:var(--text-3);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:8px">評審分數</span>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px">${scoreInputs}</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button onclick="saveEditRow(${id})" style="flex:1;padding:10px;border:none;border-radius:var(--r-md);background:linear-gradient(135deg,#0a9e78,#1870c8);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">儲存</button>
+          <button onclick="closeEditRow()" style="padding:10px 18px;border:none;border-radius:var(--r-md);background:rgba(255,255,255,.07);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">取消</button>
+          <button onclick="deleteAthlete(${id})" style="padding:10px 14px;border:none;border-radius:var(--r-md);background:rgba(255,96,96,.12);color:var(--danger);font-size:13px;cursor:pointer;font-family:inherit">刪除</button>
+        </div>
+      </div>
+    </td>`;
+  tr.after(editRow);
+  document.getElementById('ei_name_'+id)?.focus();
+}
+function closeEditRow(){
+  if(editingRowId===null) return;
+  const el = document.getElementById('editrow_'+editingRowId);
+  if(el) el.remove();
+  editingRowId=null;
+}
+function saveEditRow(id){
+  const a = athletes.find(x=>x.id===id);
+  if(!a) return;
+  const nameEl = document.getElementById('ei_name_'+id);
+  if(nameEl && nameEl.value.trim()) a.name = nameEl.value.trim();
+  judges.forEach((_,i)=>{
+    const el = document.getElementById(`ei_sc_${id}_${i}`);
+    if(el){ const v=parseFloat(el.value); if(!isNaN(v)) a.scores[i]=Math.min(10,Math.max(0,v)); }
+  });
+  editingRowId=null;
+  renderRanking();
+}
+function deleteAthlete(id){
+  if(!confirm('確定刪除此選手？')) return;
+  athletes=athletes.filter(a=>a.id!==id);
+  editingRowId=null;
+  renderRanking();
+  if(panelOpen) renderPanel();
+}
+
+/* ── Panel render ── */
+function renderPanel(){
+  // judges
+  document.getElementById('judgeEditList').innerHTML = judges.map((j,i)=>`
+    <div class="edit-item">
+      <span class="edit-item-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </span>
+      <input class="edit-item-input" value="${j}" placeholder="評審名稱"
+        onchange="renameJudge(${i}, this.value)" />
+      <button class="item-del-btn" onclick="removeJudge(${i})" title="移除">✕</button>
+    </div>`).join('');
+
+  // athletes
+  document.getElementById('athleteEditList').innerHTML = athletes.map(a=>`
+    <div class="edit-item">
+      <span class="edit-item-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
+      <input class="edit-item-input" value="${a.name}" placeholder="選手姓名"
+        onchange="renameAthlete(${a.id}, this.value)" />
+      <span style="font-size:12px;color:var(--text-2);white-space:nowrap">${avg(a.scores).toFixed(1)}</span>
+      <button class="item-del-btn" onclick="deleteAthlete(${a.id})" title="移除">✕</button>
+    </div>`).join('');
+}
+
+function renameJudge(idx, val){
+  if(val.trim()) judges[idx]=val.trim();
+  renderRanking();
+}
+function renameAthlete(id, val){
+  const a=athletes.find(x=>x.id===id);
+  if(a && val.trim()) a.name=val.trim();
+  renderRanking();
+}
+function addJudge(){
+  judges.push('評審 '+(judges.length+1));
+  athletes.forEach(a=>a.scores.push(0));
+  renderRanking();
+  renderPanel();
+  renderScoreInputs();
+}
+function removeJudge(idx){
+  if(judges.length<=1){alert('至少需要一位評審');return}
+  if(!confirm(`確定移除「${judges[idx]}」？`)) return;
+  judges.splice(idx,1);
+  athletes.forEach(a=>a.scores.splice(idx,1));
+  renderRanking();
+  renderPanel();
+  renderScoreInputs();
+}
+
+/* ── Add athlete form ── */
+function showAddAthlete(){
+  const f=document.getElementById('addAthleteForm');
+  f.style.display = f.style.display==='none' ? 'block' : 'none';
+}
+function renderScoreInputs(){
+  document.getElementById('scoreInputGrid').innerHTML = judges.map((j,i)=>`
+    <div>
+      <label class="form-label">${j}</label>
+      <input class="form-input" type="number" id="ns${i}" placeholder="0–10" min="0" max="10" step="0.1"
+        style="padding:8px 12px" />
+    </div>`).join('');
+}
+function addAthlete(){
+  const name=document.getElementById('newName').value.trim();
+  if(!name){alert('請輸入選手姓名');return}
+  const scores=judges.map((_,i)=>{
+    const v=parseFloat(document.getElementById('ns'+i)?.value);
+    return isNaN(v)?0:Math.min(10,Math.max(0,v));
+  });
+  athletes.push({id:nextId++,name,scores});
+  document.getElementById('newName').value='';
+  judges.forEach((_,i)=>{const el=document.getElementById('ns'+i);if(el)el.value='';});
+  document.getElementById('addAthleteForm').style.display='none';
+  renderRanking();
+  renderPanel();
+}
+
+/* ── Init ── */
+renderScoreInputs();
+renderRanking();
+</script>
+</body>
+</html>
