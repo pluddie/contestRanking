@@ -6,14 +6,13 @@
 <title>即時排名</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
   --teal:#0cbe90;
   --blue:#3a9fff;
-  --purple:#7c6aff;
   --gold:#e8c76a;
   --silver:#9ab1cc;
   --bronze:#c0845a;
@@ -28,204 +27,194 @@
 }
 
 html{scroll-behavior:smooth}
-
 body{
   font-family:'Inter','Noto Sans TC',sans-serif;
-  color:var(--text-1);
-  min-height:100vh;
-  overflow-x:hidden;
-  background:#020a14;
+  color:var(--text-1);min-height:100vh;
+  overflow-x:hidden;background:#020a14;
 }
 
-/* ═══ LAYERED GRADIENT BG ═══ */
+/* ── BG ── */
 .bg-canvas{
   position:fixed;inset:0;z-index:0;
   background:
-    radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(60,120,255,0.22) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 5%,   rgba(12,190,144,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 40% at 50% 100%,  rgba(124,106,255,0.14) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, #020d1c 40%, #010812 100%);
+    radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(60,120,255,0.22) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 5%,   rgba(12,190,144,0.18) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,  rgba(124,106,255,0.14) 0%,transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #020d1c 40%,#010812 100%);
 }
-/* floating blobs */
 .bg-canvas::before{
   content:'';position:absolute;inset:0;
   background:
-    radial-gradient(circle 320px at 20% 35%,  rgba(12,190,144,0.09) 0%, transparent 70%),
-    radial-gradient(circle 280px at 80% 65%,  rgba(60,120,255,0.10) 0%, transparent 70%);
+    radial-gradient(circle 320px at 20% 35%,rgba(12,190,144,0.09) 0%,transparent 70%),
+    radial-gradient(circle 280px at 80% 65%,rgba(60,120,255,0.10) 0%,transparent 70%);
   animation:blobdrift 18s ease-in-out infinite alternate;
 }
 @keyframes blobdrift{
-  0%  {transform:translate(0,0) scale(1)}
+  0%{transform:translate(0,0) scale(1)}
   100%{transform:translate(30px,20px) scale(1.06)}
 }
 
-/* ═══ LAYOUT ═══ */
-.page{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:3rem 2rem 6rem}
+/* ── LAYOUT ── */
+.page{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:3.5rem 2.5rem 6rem}
 
-/* ═══ HEADER ═══ */
-.site-header{text-align:center;margin-bottom:3.5rem}
-
-.title-wrap{display:inline-flex;align-items:center;gap:14px;cursor:pointer;position:relative}
-.title-wrap:hover .title-edit-hint{opacity:1}
-.title-edit-hint{
-  position:absolute;right:-26px;top:50%;transform:translateY(-50%);
-  opacity:0;transition:opacity .2s;
+/* ── EDIT BTN — top right ── */
+.edit-corner-btn{
+  position:fixed;top:1.5rem;right:1.8rem;z-index:50;
+  display:flex;align-items:center;gap:8px;
+  padding:9px 18px;border:none;cursor:pointer;
+  border-radius:50px;font-family:inherit;font-size:13px;font-weight:600;
+  letter-spacing:.06em;color:#fff;
+  background:linear-gradient(135deg,#0a9e78,#1870c8);
+  box-shadow:0 4px 20px rgba(12,190,144,0.3),0 2px 8px rgba(0,0,0,0.3);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
 }
+.edit-corner-btn:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(12,190,144,0.4)}
+.edit-corner-btn:active{transform:scale(.97)}
+.edit-corner-btn.active{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+
+/* ── HEADER ── */
+.site-header{text-align:center;margin-bottom:4rem;padding-top:1rem}
+.title-wrap{display:inline-flex;align-items:center;gap:12px;cursor:pointer;position:relative}
+.title-wrap:hover .title-edit-hint{opacity:1}
+.title-edit-hint{position:absolute;right:-28px;top:50%;transform:translateY(-50%);opacity:0;transition:opacity .2s}
 .title-edit-hint svg{color:var(--text-3)}
 
 #siteTitle{
-  font-size:clamp(1.9rem,5vw,3rem);font-weight:700;
+  font-size:clamp(2.4rem,6vw,3.8rem);font-weight:700;
   letter-spacing:.14em;text-transform:uppercase;
   background:linear-gradient(130deg,#eef4ff 25%,var(--teal) 80%,var(--blue) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;line-height:1.1;
-  border:none;background-color:transparent;
-  font-family:inherit;cursor:pointer;
-  text-align:center;width:auto;min-width:2ch;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.1;border:none;background-color:transparent;
+  font-family:inherit;cursor:pointer;text-align:center;width:auto;min-width:2ch;
 }
 #siteTitle:focus{outline:none;-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
+.header-accent{width:80px;height:3px;margin:1.2rem auto 0;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--teal) 40%,var(--blue),transparent)}
 
-.header-accent{
-  width:80px;height:3px;margin:1rem auto 0;border-radius:2px;
-  background:linear-gradient(90deg,transparent,var(--teal) 40%,var(--blue),transparent);
+/* ── RANKING — no card, open feel ── */
+.ranking-wrap{margin-bottom:3rem}
+
+.rank-col-head{
+  display:grid;
+  grid-template-columns: 70px 1fr 2.5fr 130px;
+  padding:0 1rem .8rem;
+  font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-3);
 }
+.rch-rank{text-align:center}
+.rch-avg{text-align:right}
 
-/* ═══ GLASS BLOCKS ═══ */
-.glass{
-  background:rgba(255,255,255,0.055);
-  backdrop-filter:blur(28px) saturate(160%);
-  -webkit-backdrop-filter:blur(28px) saturate(160%);
+/* each row is a glass pill */
+.rank-row{
+  display:grid;
+  grid-template-columns: 70px 1fr 2.5fr 130px;
+  align-items:center;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
   border-radius:var(--r-xl);
-  box-shadow:
-    0 8px 40px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.10),
-    inset 0 -1px 0 rgba(0,0,0,0.15);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 4px 24px rgba(0,0,0,.18);
+  margin-bottom:12px;
+  padding:0;
+  transition:background .2s,transform .15s;
+  cursor:default;
+  position:relative;overflow:hidden;
 }
-.glass-inner{
-  background:rgba(255,255,255,0.035);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border-radius:var(--r-lg);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07);
-}
+.rank-row:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+.rank-row.top1{background:linear-gradient(135deg,rgba(232,199,106,.10),rgba(255,255,255,.04))}
+.rank-row.top2{background:linear-gradient(135deg,rgba(154,177,204,.08),rgba(255,255,255,.04))}
+.rank-row.top3{background:linear-gradient(135deg,rgba(192,132,90,.09),rgba(255,255,255,.04))}
 
-/* ═══ SECTION LABEL ═══ */
-.sec-label{
-  font-size:10px;font-weight:600;letter-spacing:.25em;
-  text-transform:uppercase;color:var(--text-3);margin-bottom:1.6rem;
+.rank-row-inner{
+  display:contents;
 }
 
-/* ══════════════════════════
-   RANKING CARD
-══════════════════════════ */
-.ranking-card{padding:2.5rem 3rem;margin-bottom:2rem}
-
-.rank-table{width:100%;border-collapse:collapse}
-.rank-thead th{
-  font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--text-3);padding:.5rem 1.2rem 1.4rem;text-align:left;
-}
-.rank-thead th:first-child{padding-left:0;text-align:center;width:58px}
-.rank-thead th.th-avg{text-align:right;padding-right:0;min-width:110px}
-
-/* rows */
-.rank-row td{
-  padding:1.4rem 1.2rem;vertical-align:middle;
-  border-top:1px solid rgba(255,255,255,0.045);
-  transition:background .15s;
-}
-.rank-row:first-child td{border-top:1px solid rgba(255,255,255,0.07)}
-.rank-row td:first-child{padding-left:0}
-.rank-row td:last-child{padding-right:0}
-.rank-row:hover td{background:rgba(255,255,255,0.028)}
-
-/* rank badge */
+/* rank badge cell */
+.cell-rank{display:flex;align-items:center;justify-content:center;padding:1.5rem .8rem}
 .rank-badge{
-  width:38px;height:38px;border-radius:50%;margin:0 auto;
+  width:44px;height:44px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;flex-shrink:0;
+  font-size:16px;font-weight:700;flex-shrink:0;
 }
-.rb-gold  {background:linear-gradient(135deg,rgba(232,199,106,.3),rgba(232,199,106,.1));color:var(--gold)}
-.rb-silver{background:linear-gradient(135deg,rgba(154,177,204,.3),rgba(154,177,204,.1));color:var(--silver)}
-.rb-bronze{background:linear-gradient(135deg,rgba(192,132,90,.3),rgba(192,132,90,.1));color:var(--bronze)}
-.rb-other {background:rgba(255,255,255,.05);color:var(--text-2)}
+.rb-gold  {background:linear-gradient(135deg,rgba(232,199,106,.35),rgba(232,199,106,.12));color:var(--gold)}
+.rb-silver{background:linear-gradient(135deg,rgba(154,177,204,.35),rgba(154,177,204,.12));color:var(--silver)}
+.rb-bronze{background:linear-gradient(135deg,rgba(192,132,90,.35),rgba(192,132,90,.12));color:var(--bronze)}
+.rb-other {background:rgba(255,255,255,.06);color:var(--text-2)}
 
-/* athlete name */
-.athlete-name-cell{font-size:15px;font-weight:500;color:var(--text-1)}
-.medal-icon{margin-right:6px}
-
-/* scores in table — plain white, no chip border */
-.score-list{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline}
-.score-item{
-  font-size:15px;font-weight:400;color:rgba(255,255,255,.75);
-  white-space:nowrap;display:flex;align-items:center;gap:5px;
+/* name cell */
+.cell-name{padding:1.5rem .6rem;display:flex;align-items:center;gap:10px}
+.athlete-name-text{font-size:18px;font-weight:600;color:var(--text-1)}
+.row-edit-btn{
+  background:none;border:none;padding:5px;cursor:pointer;
+  color:var(--text-3);border-radius:var(--r-sm);
+  transition:color .15s,background .15s;display:flex;align-items:center;
+  opacity:0;transition:opacity .15s,color .15s,background .15s;
 }
-.score-judge-name{font-size:10px;color:var(--text-3);letter-spacing:.08em}
+.rank-row:hover .row-edit-btn{opacity:1}
+.row-edit-btn:hover{background:rgba(255,255,255,.1);color:var(--text-1)}
 
-/* avg */
-.avg-cell{text-align:right}
+/* scores cell */
+.cell-scores{padding:1.5rem .6rem}
+.score-group{display:flex;flex-wrap:wrap;gap:14px 22px}
+.score-item{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.score-judge-lbl{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-3)}
+.score-val{font-size:18px;font-weight:500;color:rgba(255,255,255,.85)}
+
+/* avg cell */
+.cell-avg{padding:1.5rem 1.2rem 1.5rem .6rem;text-align:right}
 .avg-num{
-  font-size:22px;font-weight:700;
+  font-size:28px;font-weight:700;
   background:linear-gradient(135deg,var(--teal),var(--blue));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.avg-denom{font-size:12px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
+.avg-denom{font-size:13px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
 
-/* edit pen on row hover */
-.row-edit-btn{
-  background:none;border:none;padding:5px;cursor:pointer;
-  color:var(--text-3);border-radius:var(--r-sm);transition:color .15s,background .15s;
-  display:flex;align-items:center;
+/* edit expand row */
+.edit-expand{
+  background:rgba(255,255,255,.04);
+  border-radius:var(--r-xl);
+  margin-top:-6px;margin-bottom:12px;
+  padding:1.8rem 2rem;
+  display:flex;flex-direction:column;gap:16px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 4px 30px rgba(0,0,0,.2);
 }
-.rank-row:hover .row-edit-btn{color:var(--text-2)}
-.row-edit-btn:hover{background:rgba(255,255,255,.08);color:var(--text-1)!important}
+.edit-expand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.ee-label{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;display:block}
+.ee-input{
+  width:100%;background:rgba(255,255,255,.06);border:none;border-radius:var(--r-md);
+  padding:12px 16px;color:var(--text-1);font-size:15px;outline:none;
+  font-family:inherit;transition:background .15s;
+}
+.ee-input:focus{background:rgba(255,255,255,.11)}
+.ee-actions{display:flex;gap:10px}
+.ee-save{flex:1;padding:12px;border:none;border-radius:var(--r-md);background:linear-gradient(135deg,#0a9e78,#1870c8);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.ee-save:hover{opacity:.88}
+.ee-cancel{padding:12px 18px;border:none;border-radius:var(--r-md);background:rgba(255,255,255,.07);color:var(--text-2);font-size:14px;cursor:pointer;font-family:inherit}
+.ee-del{padding:12px 16px;border:none;border-radius:var(--r-md);background:rgba(255,96,96,.12);color:var(--danger);font-size:14px;cursor:pointer;font-family:inherit}
 
 /* empty */
-.rank-empty td{
-  text-align:center;padding:4rem;color:var(--text-3);
-  font-size:13px;letter-spacing:.08em;border-top:none!important;
+.rank-empty{
+  text-align:center;padding:5rem 2rem;color:var(--text-3);
+  font-size:16px;letter-spacing:.08em;
 }
 
-/* ══════════════════════════
-   EDIT FAB
-══════════════════════════ */
-.fab{
-  position:fixed;right:2rem;bottom:2.5rem;z-index:50;
-  display:flex;align-items:center;gap:10px;
-  padding:13px 22px;border:none;cursor:pointer;
-  border-radius:50px;font-family:inherit;font-size:14px;font-weight:600;
-  letter-spacing:.06em;color:#fff;
-  background:linear-gradient(135deg,#0a9e78,#1870c8);
-  box-shadow:0 6px 30px rgba(12,190,144,0.38),0 2px 8px rgba(0,0,0,0.3);
-  transition:transform .15s,box-shadow .15s,opacity .15s;
-}
-.fab:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(12,190,144,0.45),0 3px 12px rgba(0,0,0,0.35)}
-.fab:active{transform:scale(.97)}
-.fab-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:rgba(255,255,255,.6);
-  transition:background .2s;
-}
-.fab.active .fab-dot{background:#fff}
-
-/* ══════════════════════════
-   SLIDE PANEL
-══════════════════════════ */
+/* ── SLIDE PANEL ── */
 .panel-overlay{
   position:fixed;inset:0;z-index:40;
-  background:rgba(1,8,20,0.55);
+  background:rgba(1,8,20,0.5);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .3s ease;
+  opacity:0;pointer-events:none;transition:opacity .3s;
 }
 .panel-overlay.open{opacity:1;pointer-events:all}
 
 .slide-panel{
   position:fixed;right:0;top:0;bottom:0;z-index:45;
   width:min(480px,100vw);
-  background:rgba(4,18,36,0.88);
-  backdrop-filter:blur(36px) saturate(180%);
-  -webkit-backdrop-filter:blur(36px) saturate(180%);
-  box-shadow:-8px 0 60px rgba(0,0,0,0.55),inset 1px 0 0 rgba(255,255,255,.07);
+  background:rgba(3,14,30,0.9);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  box-shadow:-6px 0 60px rgba(0,0,0,.6),inset 1px 0 0 rgba(255,255,255,.06);
   transform:translateX(100%);
   transition:transform .35s cubic-bezier(.25,.8,.25,1);
   overflow-y:auto;display:flex;flex-direction:column;
@@ -235,99 +224,82 @@ body{
 
 .panel-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:2rem 2rem 1.5rem;
-  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:2.2rem 2rem 1.8rem;
   position:sticky;top:0;
-  background:rgba(4,18,36,0.92);
+  background:rgba(3,14,30,0.94);
   backdrop-filter:blur(20px);z-index:2;
 }
-.panel-head h2{font-size:16px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-1)}
+.panel-head h2{font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--text-1)}
 .panel-close{
-  background:rgba(255,255,255,.07);border:none;border-radius:50%;
-  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);border:none;border-radius:50%;
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
   color:var(--text-2);cursor:pointer;transition:background .15s,color .15s;
 }
-.panel-close:hover{background:rgba(255,255,255,.13);color:var(--text-1)}
+.panel-close:hover{background:rgba(255,255,255,.15);color:var(--text-1)}
 
-.panel-body{padding:2rem;flex:1;display:flex;flex-direction:column;gap:2.5rem}
+.panel-body{padding:1.5rem 2rem 2.5rem;flex:1;display:flex;flex-direction:column;gap:2.8rem}
 
-/* ── Panel section ── */
-.panel-section{}
-.panel-sec-label{
-  font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--text-3);margin-bottom:1.2rem;
-}
-
-/* judge / athlete item in panel */
-.edit-list{display:flex;flex-direction:column;gap:8px}
+/* panel section */
+.panel-sec-head{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);margin-bottom:1.2rem}
+.edit-list{display:flex;flex-direction:column;gap:10px}
 .edit-item{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,.04);
-  border-radius:var(--r-md);
-  padding:11px 14px;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.05);border-radius:var(--r-md);padding:13px 16px;
 }
 .edit-item-icon{color:var(--text-3);flex-shrink:0;display:flex}
 .edit-item-input{
   flex:1;background:none;border:none;outline:none;
-  color:var(--text-1);font-size:14px;font-family:inherit;
-  min-width:0;
+  color:var(--text-1);font-size:15px;font-family:inherit;min-width:0;
 }
 .edit-item-input::placeholder{color:var(--text-3)}
 .edit-item-input:focus{color:var(--teal)}
-
 .item-del-btn{
   background:none;border:none;cursor:pointer;
-  color:var(--text-3);transition:color .15s;padding:2px 4px;font-size:15px;line-height:1;
+  color:var(--text-3);transition:color .15s;padding:2px 4px;font-size:16px;line-height:1;
 }
 .item-del-btn:hover{color:var(--danger)}
 
 .add-row-btn{
-  margin-top:10px;width:100%;
-  background:rgba(12,190,144,.09);
-  border:none;border-radius:var(--r-md);
-  padding:11px;color:var(--teal);font-size:13px;
-  letter-spacing:.08em;cursor:pointer;font-family:inherit;
+  margin-top:12px;width:100%;background:rgba(12,190,144,.08);
+  border:none;border-radius:var(--r-md);padding:13px;color:var(--teal);
+  font-size:14px;letter-spacing:.08em;cursor:pointer;font-family:inherit;
+  font-weight:500;transition:background .15s;
+}
+.add-row-btn:hover{background:rgba(12,190,144,.15)}
+
+/* add athlete form */
+.add-form{display:flex;flex-direction:column;gap:14px}
+.form-label{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;display:block}
+.form-input{
+  width:100%;background:rgba(255,255,255,.06);border:none;border-radius:var(--r-md);
+  padding:13px 16px;color:var(--text-1);font-size:15px;outline:none;font-family:inherit;
   transition:background .15s;
 }
-.add-row-btn:hover{background:rgba(12,190,144,.16)}
-
-/* ── Add athlete form ── */
-.add-form{display:flex;flex-direction:column;gap:12px}
-.form-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;display:block}
-.form-input{
-  width:100%;background:rgba(255,255,255,.05);
-  border:none;border-radius:var(--r-md);
-  padding:11px 16px;color:var(--text-1);font-size:14px;
-  outline:none;font-family:inherit;transition:background .15s;
-}
-.form-input:focus{background:rgba(255,255,255,.09)}
+.form-input:focus{background:rgba(255,255,255,.1)}
 .form-input::placeholder{color:var(--text-3)}
-
-.score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
-
+.score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px}
 .save-btn{
   margin-top:4px;width:100%;border:none;border-radius:var(--r-md);
-  padding:13px;color:#fff;font-size:14px;font-weight:600;
+  padding:14px;color:#fff;font-size:15px;font-weight:600;
   letter-spacing:.06em;cursor:pointer;font-family:inherit;
   background:linear-gradient(135deg,#0a9e78,#1870c8);
   transition:opacity .15s,transform .1s;
 }
-.save-btn:hover{opacity:.9}
+.save-btn:hover{opacity:.88}
 .save-btn:active{transform:scale(.98)}
-
 .divider{height:1px;background:rgba(255,255,255,.05);margin:.5rem 0}
 
-/* ═══ RESPONSIVE ═══ */
-@media(max-width:640px){
-  .page{padding:2rem 1.2rem 5rem}
-  .ranking-card{padding:1.8rem 1.4rem}
-  .fab{right:1.2rem;bottom:1.8rem;padding:11px 18px;font-size:13px}
-  .rank-thead .th-scores{display:none}
-  .cell-scores{display:none}
+/* responsive */
+@media(max-width:680px){
+  .page{padding:2.5rem 1.2rem 5rem}
+  .rank-col-head,
+  .rank-row{grid-template-columns:58px 1fr 130px}
+  .rch-scores,.cell-scores{display:none}
+  .edit-corner-btn{top:1rem;right:1rem;padding:8px 14px;font-size:12px}
 }
-@media(max-width:400px){
-  .ranking-card{padding:1.4rem 1rem}
+@media(max-width:420px){
   .slide-panel{width:100vw}
+  .rank-row{grid-template-columns:52px 1fr 110px}
 }
 </style>
 </head>
@@ -335,13 +307,19 @@ body{
 
 <div class="bg-canvas"></div>
 
+<!-- EDIT BTN — top right -->
+<button class="edit-corner-btn" id="editBtn" onclick="togglePanel()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+  <span id="editBtnLabel">編輯</span>
+</button>
+
 <div class="page">
 
   <!-- HEADER -->
   <header class="site-header">
     <div class="title-wrap" onclick="focusTitle()">
       <input id="siteTitle" value="即時排名" spellcheck="false"
-        onblur="this.style.minWidth=''" oninput="autoWidth(this)" />
+        oninput="autoWidth(this)" onblur="autoWidth(this)"/>
       <span class="title-edit-hint">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </span>
@@ -349,31 +327,18 @@ body{
     <div class="header-accent"></div>
   </header>
 
-  <!-- RANKING TABLE -->
-  <section class="glass ranking-card">
-    <p class="sec-label">排名總覽</p>
-    <div style="overflow-x:auto">
-      <table class="rank-table" id="rankTable">
-        <thead class="rank-thead">
-          <tr>
-            <th>排名</th>
-            <th>選手</th>
-            <th class="th-scores" id="thScores">評審分數</th>
-            <th class="th-avg">平均分數</th>
-          </tr>
-        </thead>
-        <tbody id="rankBody"></tbody>
-      </table>
+  <!-- RANKING -->
+  <div class="ranking-wrap">
+    <div class="rank-col-head">
+      <div class="rch-rank">排名</div>
+      <div>選手</div>
+      <div class="rch-scores">評審分數</div>
+      <div class="rch-avg">平均分數</div>
     </div>
-  </section>
+    <div id="rankList"></div>
+  </div>
 
-</div><!-- /page -->
-
-<!-- EDIT FAB -->
-<button class="fab" id="editFab" onclick="togglePanel()">
-  <span class="fab-dot"></span>
-  <span id="fabLabel">編輯</span>
-</button>
+</div>
 
 <!-- OVERLAY -->
 <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
@@ -388,30 +353,30 @@ body{
   </div>
   <div class="panel-body">
 
-    <!-- 評審列表 -->
-    <div class="panel-section">
-      <p class="panel-sec-label">評審列表</p>
+    <!-- 評審 -->
+    <div>
+      <p class="panel-sec-head">評審列表</p>
       <div class="edit-list" id="judgeEditList"></div>
       <button class="add-row-btn" onclick="addJudge()">＋ 新增評審</button>
     </div>
 
     <div class="divider"></div>
 
-    <!-- 選手列表 -->
-    <div class="panel-section">
-      <p class="panel-sec-label">選手列表</p>
+    <!-- 選手 -->
+    <div>
+      <p class="panel-sec-head">選手列表</p>
       <div class="edit-list" id="athleteEditList"></div>
       <button class="add-row-btn" onclick="showAddAthlete()">＋ 新增選手</button>
     </div>
 
-    <!-- 新增選手展開區 -->
+    <!-- 新增選手表單 -->
     <div id="addAthleteForm" style="display:none">
       <div class="divider" style="margin-bottom:1.5rem"></div>
-      <p class="panel-sec-label">新增選手</p>
+      <p class="panel-sec-head">新增選手</p>
       <div class="add-form">
         <div>
           <label class="form-label">姓名</label>
-          <input class="form-input" id="newName" placeholder="選手姓名" />
+          <input class="form-input" id="newName" placeholder="選手姓名"/>
         </div>
         <div>
           <label class="form-label">評審分數</label>
@@ -425,230 +390,207 @@ body{
 </div>
 
 <script>
-let judges = ['評審 1', '評審 2', '評審 3'];
+let judges = ['評審 1','評審 2','評審 3'];
 let athletes = [
-  {id:1, name:'陳雅婷', scores:[9.2,8.8,9.5]},
-  {id:2, name:'林志明', scores:[8.5,9.1,8.9]},
-  {id:3, name:'王美玲', scores:[9.7,9.3,9.6]},
-  {id:4, name:'張偉恩', scores:[8.1,8.4,8.0]},
+  {id:1, name:'EPM 1', scores:[0,0,0]},
+  {id:2, name:'EPM 2', scores:[0,0,0]},
+  {id:3, name:'EPM 3', scores:[0,0,0]},
+  {id:4, name:'EPM 4', scores:[0,0,0]},
 ];
 let nextId = 5;
+let editingRowId = null;
+let panelOpen = false;
 
-/* ── utils ── */
 function avg(s){ return s.length ? s.reduce((a,b)=>a+b,0)/s.length : 0 }
 
+/* title auto-width */
 function autoWidth(el){
-  const tmp = document.createElement('span');
-  tmp.style.cssText='position:absolute;visibility:hidden;white-space:pre;font:inherit;font-size:'+getComputedStyle(el).fontSize+';font-weight:'+getComputedStyle(el).fontWeight+';letter-spacing:'+getComputedStyle(el).letterSpacing;
-  tmp.textContent = el.value || el.placeholder;
-  document.body.appendChild(tmp);
-  el.style.width = (tmp.offsetWidth + 20) + 'px';
-  document.body.removeChild(tmp);
+  const s = document.createElement('span');
+  s.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-size:'+getComputedStyle(el).fontSize+';font-weight:'+getComputedStyle(el).fontWeight+';letter-spacing:'+getComputedStyle(el).letterSpacing+';font-family:'+getComputedStyle(el).fontFamily;
+  s.textContent = el.value || el.placeholder || 'X';
+  document.body.appendChild(s);
+  el.style.width = (s.offsetWidth + 24) + 'px';
+  document.body.removeChild(s);
 }
 function focusTitle(){ const t=document.getElementById('siteTitle'); t.focus(); t.select(); }
-window.addEventListener('load', ()=>{ autoWidth(document.getElementById('siteTitle')); });
+window.addEventListener('load',()=>autoWidth(document.getElementById('siteTitle')));
 
-/* ── Panel ── */
-let panelOpen = false;
+/* panel */
 function togglePanel(){ panelOpen ? closePanel() : openPanel(); }
 function openPanel(){
   panelOpen=true;
   document.getElementById('slidePanel').classList.add('open');
   document.getElementById('overlay').classList.add('open');
-  document.getElementById('editFab').classList.add('active');
-  document.getElementById('fabLabel').textContent='關閉';
+  const btn = document.getElementById('editBtn');
+  btn.classList.add('active');
+  document.getElementById('editBtnLabel').textContent='關閉';
+  btn.style.display='none';  /* hide FAB when panel open */
   renderPanel();
 }
 function closePanel(){
   panelOpen=false;
   document.getElementById('slidePanel').classList.remove('open');
   document.getElementById('overlay').classList.remove('open');
-  document.getElementById('editFab').classList.remove('active');
-  document.getElementById('fabLabel').textContent='編輯';
+  const btn = document.getElementById('editBtn');
+  btn.classList.remove('active');
+  document.getElementById('editBtnLabel').textContent='編輯';
+  btn.style.display='';
 }
 
-/* ── Render ranking ── */
+/* render ranking */
 function renderRanking(){
-  const sorted = [...athletes].sort((a,b)=>avg(b.scores)-avg(a.scores));
-  const body = document.getElementById('rankBody');
+  const sorted=[...athletes].sort((a,b)=>avg(b.scores)-avg(a.scores));
+  const list=document.getElementById('rankList');
   if(!sorted.length){
-    body.innerHTML=`<tr class="rank-empty"><td colspan="4">尚未新增選手</td></tr>`;
+    list.innerHTML=`<div class="rank-empty">尚未新增選手</div>`;
     return;
   }
-  body.innerHTML = sorted.map((a,rank)=>{
+  let html='';
+  sorted.forEach((a,rank)=>{
     const r=rank+1;
-    const bc = r===1?'rb-gold':r===2?'rb-silver':r===3?'rb-bronze':'rb-other';
-    const medal= r<=3?['🥇','🥈','🥉'][r-1]+' ':'';
+    const bc=r===1?'rb-gold':r===2?'rb-silver':r===3?'rb-bronze':'rb-other';
+    const rowCls=r===1?'top1':r===2?'top2':r===3?'top3':'';
     const avgVal=avg(a.scores);
-    const scoreItems = a.scores.map((sc,i)=>`
-      <span class="score-item">
-        <span class="score-judge-name">${judges[i]||('J'+(i+1))}</span>
-        ${sc.toFixed(1)}
-      </span>`).join('');
-    return `
-    <tr class="rank-row" id="row_${a.id}">
-      <td style="text-align:center"><div class="rank-badge ${bc}">${r}</div></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span class="athlete-name-cell"><span class="medal-icon">${medal.trim()}</span> ${a.name}</span>
-          <button class="row-edit-btn" onclick="openEditRow(${a.id})" title="編輯此選手">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-        </div>
-      </td>
-      <td class="cell-scores"><div class="score-list">${scoreItems}</div></td>
-      <td class="avg-cell"><span class="avg-num">${avgVal.toFixed(2)}</span><span class="avg-denom"> / 10</span></td>
-    </tr>`;
-  }).join('');
-}
+    const scoreItems=a.scores.map((sc,i)=>`
+      <div class="score-item">
+        <span class="score-judge-lbl">${judges[i]||('J'+(i+1))}</span>
+        <span class="score-val">${sc.toFixed(1)}</span>
+      </div>`).join('');
 
-/* ── Inline row edit (overlay mini-form in table) ── */
-let editingRowId = null;
-function openEditRow(id){
-  if(editingRowId === id){ closeEditRow(); return; }
-  if(editingRowId !== null) closeEditRow();
-  editingRowId = id;
-  const a = athletes.find(x=>x.id===id);
-  const tr = document.getElementById('row_'+id);
-  if(!tr || !a) return;
-  const scoreInputs = judges.map((j,i)=>`
-    <div style="display:flex;flex-direction:column;gap:4px">
-      <span style="font-size:10px;color:var(--text-3);letter-spacing:.1em">${j}</span>
-      <input class="form-input" id="ei_sc_${id}_${i}" type="number" value="${(a.scores[i]||0).toFixed(1)}" min="0" max="10" step="0.1"
-        style="padding:7px 10px;font-size:13px" />
-    </div>`).join('');
-  const editRow = document.createElement('tr');
-  editRow.id = 'editrow_'+id;
-  editRow.innerHTML=`
-    <td colspan="4" style="padding:0 1.2rem 1.2rem">
-      <div style="background:rgba(255,255,255,.05);border-radius:var(--r-lg);padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div style="flex:1">
-            <span style="font-size:10px;color:var(--text-3);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px">姓名</span>
-            <input class="form-input" id="ei_name_${id}" value="${a.name}" style="padding:8px 14px" />
-          </div>
+    html+=`
+    <div class="rank-row ${rowCls}" id="row_${a.id}">
+      <div class="cell-rank"><div class="rank-badge ${bc}">${r}</div></div>
+      <div class="cell-name">
+        <span class="athlete-name-text">${a.name}</span>
+        <button class="row-edit-btn" onclick="openEditRow(${a.id})" title="編輯">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div class="cell-scores"><div class="score-group">${scoreItems}</div></div>
+      <div class="cell-avg">
+        <span class="avg-num">${avgVal.toFixed(2)}</span><span class="avg-denom"> / 10</span>
+      </div>
+    </div>`;
+
+    /* inline edit expand */
+    if(editingRowId===a.id){
+      const scInputs=judges.map((j,i)=>`
+        <div>
+          <span class="ee-label">${j}</span>
+          <input class="ee-input" id="ei_sc_${a.id}_${i}" type="number"
+            value="${(a.scores[i]||0).toFixed(1)}" min="0" max="10" step="0.1"/>
+        </div>`).join('');
+      html+=`
+      <div class="edit-expand" id="editrow_${a.id}">
+        <div>
+          <span class="ee-label">姓名</span>
+          <input class="ee-input" id="ei_name_${a.id}" value="${a.name}"/>
         </div>
         <div>
-          <span style="font-size:10px;color:var(--text-3);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:8px">評審分數</span>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px">${scoreInputs}</div>
+          <span class="ee-label">評審分數</span>
+          <div class="edit-expand-grid">${scInputs}</div>
         </div>
-        <div style="display:flex;gap:10px">
-          <button onclick="saveEditRow(${id})" style="flex:1;padding:10px;border:none;border-radius:var(--r-md);background:linear-gradient(135deg,#0a9e78,#1870c8);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">儲存</button>
-          <button onclick="closeEditRow()" style="padding:10px 18px;border:none;border-radius:var(--r-md);background:rgba(255,255,255,.07);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">取消</button>
-          <button onclick="deleteAthlete(${id})" style="padding:10px 14px;border:none;border-radius:var(--r-md);background:rgba(255,96,96,.12);color:var(--danger);font-size:13px;cursor:pointer;font-family:inherit">刪除</button>
+        <div class="ee-actions">
+          <button class="ee-save" onclick="saveEditRow(${a.id})">儲存</button>
+          <button class="ee-cancel" onclick="closeEditRow()">取消</button>
+          <button class="ee-del" onclick="deleteAthlete(${a.id})">刪除</button>
         </div>
-      </div>
-    </td>`;
-  tr.after(editRow);
-  document.getElementById('ei_name_'+id)?.focus();
-}
-function closeEditRow(){
-  if(editingRowId===null) return;
-  const el = document.getElementById('editrow_'+editingRowId);
-  if(el) el.remove();
-  editingRowId=null;
-}
-function saveEditRow(id){
-  const a = athletes.find(x=>x.id===id);
-  if(!a) return;
-  const nameEl = document.getElementById('ei_name_'+id);
-  if(nameEl && nameEl.value.trim()) a.name = nameEl.value.trim();
-  judges.forEach((_,i)=>{
-    const el = document.getElementById(`ei_sc_${id}_${i}`);
-    if(el){ const v=parseFloat(el.value); if(!isNaN(v)) a.scores[i]=Math.min(10,Math.max(0,v)); }
+      </div>`;
+    }
   });
-  editingRowId=null;
+  list.innerHTML=html;
+  if(editingRowId!==null){
+    const el=document.getElementById('ei_name_'+editingRowId);
+    if(el){ el.focus(); el.select(); }
+  }
+}
+
+function openEditRow(id){
+  if(editingRowId===id){closeEditRow();return;}
+  editingRowId=id;
   renderRanking();
+}
+function closeEditRow(){editingRowId=null;renderRanking();}
+function saveEditRow(id){
+  const a=athletes.find(x=>x.id===id);
+  if(!a) return;
+  const ne=document.getElementById('ei_name_'+id);
+  if(ne&&ne.value.trim()) a.name=ne.value.trim();
+  judges.forEach((_,i)=>{
+    const el=document.getElementById(`ei_sc_${id}_${i}`);
+    if(el){const v=parseFloat(el.value);if(!isNaN(v))a.scores[i]=Math.min(10,Math.max(0,v));}
+  });
+  editingRowId=null;renderRanking();
 }
 function deleteAthlete(id){
   if(!confirm('確定刪除此選手？')) return;
   athletes=athletes.filter(a=>a.id!==id);
-  editingRowId=null;
-  renderRanking();
+  editingRowId=null;renderRanking();
   if(panelOpen) renderPanel();
 }
 
-/* ── Panel render ── */
+/* panel render */
 function renderPanel(){
-  // judges
-  document.getElementById('judgeEditList').innerHTML = judges.map((j,i)=>`
+  document.getElementById('judgeEditList').innerHTML=judges.map((j,i)=>`
     <div class="edit-item">
       <span class="edit-item-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       </span>
-      <input class="edit-item-input" value="${j}" placeholder="評審名稱"
-        onchange="renameJudge(${i}, this.value)" />
+      <input class="edit-item-input" value="${j}" placeholder="評審名稱" onchange="renameJudge(${i},this.value)"/>
       <button class="item-del-btn" onclick="removeJudge(${i})" title="移除">✕</button>
     </div>`).join('');
 
-  // athletes
-  document.getElementById('athleteEditList').innerHTML = athletes.map(a=>`
+  document.getElementById('athleteEditList').innerHTML=athletes.map(a=>`
     <div class="edit-item">
       <span class="edit-item-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
       </span>
-      <input class="edit-item-input" value="${a.name}" placeholder="選手姓名"
-        onchange="renameAthlete(${a.id}, this.value)" />
-      <span style="font-size:12px;color:var(--text-2);white-space:nowrap">${avg(a.scores).toFixed(1)}</span>
+      <input class="edit-item-input" value="${a.name}" placeholder="選手姓名" onchange="renameAthlete(${a.id},this.value)"/>
       <button class="item-del-btn" onclick="deleteAthlete(${a.id})" title="移除">✕</button>
     </div>`).join('');
 }
 
-function renameJudge(idx, val){
-  if(val.trim()) judges[idx]=val.trim();
-  renderRanking();
-}
-function renameAthlete(id, val){
-  const a=athletes.find(x=>x.id===id);
-  if(a && val.trim()) a.name=val.trim();
-  renderRanking();
-}
+function renameJudge(idx,val){if(val.trim())judges[idx]=val.trim();renderRanking();}
+function renameAthlete(id,val){const a=athletes.find(x=>x.id===id);if(a&&val.trim())a.name=val.trim();renderRanking();}
+
 function addJudge(){
   judges.push('評審 '+(judges.length+1));
   athletes.forEach(a=>a.scores.push(0));
-  renderRanking();
-  renderPanel();
-  renderScoreInputs();
+  renderRanking();renderPanel();renderScoreInputs();
 }
 function removeJudge(idx){
-  if(judges.length<=1){alert('至少需要一位評審');return}
+  if(judges.length<=1){alert('至少需要一位評審');return;}
   if(!confirm(`確定移除「${judges[idx]}」？`)) return;
   judges.splice(idx,1);
   athletes.forEach(a=>a.scores.splice(idx,1));
-  renderRanking();
-  renderPanel();
-  renderScoreInputs();
+  renderRanking();renderPanel();renderScoreInputs();
 }
 
-/* ── Add athlete form ── */
 function showAddAthlete(){
   const f=document.getElementById('addAthleteForm');
-  f.style.display = f.style.display==='none' ? 'block' : 'none';
+  f.style.display=f.style.display==='none'?'block':'none';
 }
 function renderScoreInputs(){
-  document.getElementById('scoreInputGrid').innerHTML = judges.map((j,i)=>`
+  document.getElementById('scoreInputGrid').innerHTML=judges.map((j,i)=>`
     <div>
       <label class="form-label">${j}</label>
-      <input class="form-input" type="number" id="ns${i}" placeholder="0–10" min="0" max="10" step="0.1"
-        style="padding:8px 12px" />
+      <input class="form-input" type="number" id="ns${i}" placeholder="0.0" min="0" max="10" step="0.1" value="0"/>
     </div>`).join('');
 }
 function addAthlete(){
   const name=document.getElementById('newName').value.trim();
-  if(!name){alert('請輸入選手姓名');return}
+  if(!name){alert('請輸入選手姓名');return;}
   const scores=judges.map((_,i)=>{
     const v=parseFloat(document.getElementById('ns'+i)?.value);
     return isNaN(v)?0:Math.min(10,Math.max(0,v));
   });
   athletes.push({id:nextId++,name,scores});
   document.getElementById('newName').value='';
-  judges.forEach((_,i)=>{const el=document.getElementById('ns'+i);if(el)el.value='';});
+  judges.forEach((_,i)=>{const el=document.getElementById('ns'+i);if(el)el.value='0';});
   document.getElementById('addAthleteForm').style.display='none';
-  renderRanking();
-  renderPanel();
+  renderRanking();renderPanel();
 }
 
-/* ── Init ── */
 renderScoreInputs();
 renderRanking();
 </script>
