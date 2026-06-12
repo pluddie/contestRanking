@@ -10,10 +10,9 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --teal:#0cbe90;--blue:#3a9fff;
-  --gold:#e8c76a;--silver:#9ab1cc;--bronze:#c0845a;
-  --text-1:#eef4ff;--text-2:#8aaccc;--text-3:#3a536e;
-  --danger:#ff6060;
+  --teal:#14f1c4;--blue:#3a8bff;
+  --gold:#ffd166;--silver:#d4e2ff;--bronze:#ff9f5e;
+  --text-1:#f4f9ff;--text-2:#9fc1e8;--text-3:#3f5c7a;
   --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:28px;
 }
 html{scroll-behavior:smooth}
@@ -22,14 +21,14 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 /* ── BG ── */
 .bg-canvas{position:fixed;inset:0;z-index:0;
   background:
-    radial-gradient(ellipse 80% 60% at 10% 0%,rgba(60,120,255,.22) 0%,transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 5%,rgba(12,190,144,.18) 0%,transparent 55%),
-    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(124,106,255,.14) 0%,transparent 60%),
+    radial-gradient(ellipse 80% 60% at 10% 0%,rgba(58,139,255,.32) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 5%,rgba(20,241,196,.26) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(124,106,255,.2) 0%,transparent 60%),
     radial-gradient(ellipse 100% 100% at 50% 50%,#020d1c 40%,#010812 100%);
 }
 .bg-canvas::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(circle 320px at 20% 35%,rgba(12,190,144,.08) 0%,transparent 70%),
-             radial-gradient(circle 280px at 80% 65%,rgba(60,120,255,.09) 0%,transparent 70%);
+  background:radial-gradient(circle 360px at 20% 35%,rgba(20,241,196,.14) 0%,transparent 70%),
+             radial-gradient(circle 320px at 80% 65%,rgba(58,139,255,.16) 0%,transparent 70%);
   animation:blobdrift 18s ease-in-out infinite alternate}
 @keyframes blobdrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,18px) scale(1.05)}}
 
@@ -38,44 +37,53 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
 /* ── EDIT BTN ── */
 .edit-corner-btn{
-  position:fixed;top:1.4rem;right:1.8rem;z-index:50;
-  display:flex;align-items:center;gap:7px;
-  padding:8px 16px;border:none;cursor:pointer;
-  border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:7px;flex-shrink:0;
+  padding:10px 20px;border:none;cursor:pointer;
+  border-radius:50px;font-family:inherit;font-size:13px;font-weight:600;
   letter-spacing:.06em;color:#fff;
-  background:linear-gradient(135deg,#0a9e78,#1870c8);
-  box-shadow:0 4px 18px rgba(12,190,144,.28),0 2px 6px rgba(0,0,0,.3);
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  box-shadow:0 4px 18px rgba(20,241,196,.28),0 2px 6px rgba(0,0,0,.3);
   transition:transform .15s,box-shadow .15s;
 }
-.edit-corner-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(12,190,144,.38)}
+.edit-corner-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(20,241,196,.4)}
 .edit-corner-btn:active{transform:scale(.97)}
-.edit-corner-btn.panel-open{display:none}
 
 /* ── HEADER ── */
-.site-header{text-align:center;margin-bottom:3rem;padding-top:.5rem}
-.title-wrap{display:inline-flex;align-items:center;gap:10px;cursor:pointer;position:relative}
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;margin-bottom:2.5rem;padding-top:.5rem}
+.title-block{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.title-wrap{display:inline-flex;align-items:center;gap:10px;cursor:text;position:relative;max-width:100%}
 .title-wrap:hover .title-hint{opacity:1}
-.title-hint{position:absolute;right:-24px;top:50%;transform:translateY(-50%);opacity:0;transition:opacity .2s}
+.title-hint{flex-shrink:0;opacity:0;transition:opacity .2s;display:flex;cursor:pointer}
 .title-hint svg{color:var(--text-3)}
 #siteTitle{
-  font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:clamp(1.4rem,4vw,2.2rem);font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   background:linear-gradient(130deg,#eef4ff 20%,var(--teal) 75%,var(--blue) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1.1;border:none;background-color:transparent;
-  font-family:inherit;cursor:pointer;text-align:center;width:auto;min-width:2ch;
+  line-height:1.2;outline:none;cursor:text;white-space:nowrap;
 }
-#siteTitle:focus{outline:none;-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
-.header-accent{width:60px;height:2px;margin:.9rem auto 0;border-radius:2px;
-  background:linear-gradient(90deg,transparent,var(--teal) 40%,var(--blue),transparent)}
+#siteTitle:focus{-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
+#siteTitle:empty:before{content:attr(data-placeholder);-webkit-text-fill-color:var(--text-3);background:none;color:var(--text-3)}
+.header-accent{width:60px;height:3px;margin:.7rem 0 0;border-radius:2px;
+  background:linear-gradient(90deg,var(--teal),var(--blue))}
+
+/* ── RANK CARD ── */
+.rank-card{
+  background:linear-gradient(165deg,rgba(58,139,255,.1),rgba(20,241,196,.05));
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r-xl);
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  box-shadow:0 12px 50px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);
+  padding:1.4rem 0 .4rem;
+  overflow:hidden;
+}
 
 /* ── COLUMN HEADS ── */
 .rank-col-head{
   display:grid;grid-template-columns:60px 1fr 2.5fr 110px;
-  padding:0 1rem .6rem;
-  font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);
+  padding:0 1.4rem .35rem;
+  font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2);
+  text-align:center;
 }
-.rch-rank{text-align:center}
-.rch-avg{text-align:right}
 
 /* ── ROWS ── */
 .rank-list{position:relative}
@@ -83,40 +91,41 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .rank-row{
   display:grid;grid-template-columns:60px 1fr 2.5fr 110px;
   align-items:center;
-  padding:0;
-  border-bottom:1px solid rgba(255,255,255,.055);
+  padding:0 1.4rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
   cursor:pointer;
   transition:background .15s;
   position:relative;
 }
-.rank-row:first-child{border-top:1px solid rgba(255,255,255,.055)}
-.rank-row:hover{background:rgba(255,255,255,.04)}
-.rank-row.active-row{background:rgba(12,190,144,.07)}
+.rank-row:last-child{border-bottom:none}
+.rank-row:hover{background:rgba(58,139,255,.07)}
+.rank-row.active-row{background:rgba(20,241,196,.1);box-shadow:inset 3px 0 0 var(--teal)}
 
 /* badge */
 .cell-rank{display:flex;align-items:center;justify-content:center;padding:.9rem .5rem}
-.rank-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.rb-gold  {background:linear-gradient(135deg,rgba(232,199,106,.3),rgba(232,199,106,.1));color:var(--gold)}
-.rb-silver{background:linear-gradient(135deg,rgba(154,177,204,.3),rgba(154,177,204,.1));color:var(--silver)}
-.rb-bronze{background:linear-gradient(135deg,rgba(192,132,90,.3),rgba(192,132,90,.1));color:var(--bronze)}
-.rb-other {background:rgba(255,255,255,.05);color:var(--text-2)}
+.rank-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.rb-gold  {background:linear-gradient(135deg,rgba(255,209,102,.4),rgba(255,209,102,.12));color:var(--gold);box-shadow:0 0 16px rgba(255,209,102,.35)}
+.rb-silver{background:linear-gradient(135deg,rgba(212,226,255,.35),rgba(212,226,255,.1));color:var(--silver);box-shadow:0 0 14px rgba(212,226,255,.2)}
+.rb-bronze{background:linear-gradient(135deg,rgba(255,159,94,.4),rgba(255,159,94,.12));color:var(--bronze);box-shadow:0 0 14px rgba(255,159,94,.3)}
+.rb-other {background:rgba(255,255,255,.06);color:var(--text-2)}
 
 /* name */
-.cell-name{padding:.9rem .5rem;font-size:16px;font-weight:600;color:var(--text-1)}
+.cell-name{padding:.9rem .5rem;font-size:19px;font-weight:700;color:var(--text-1);text-align:center}
 
 /* scores */
-.cell-scores{padding:.9rem .5rem}
-.score-group{display:flex;flex-wrap:wrap;gap:8px 18px}
-.score-item{display:flex;flex-direction:column;gap:2px;align-items:flex-start}
-.score-judge-lbl{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
-.score-val{font-size:15px;font-weight:500;color:rgba(255,255,255,.8)}
+.cell-scores{padding:.9rem .5rem;overflow:hidden}
+.score-group{display:flex;flex-wrap:nowrap;justify-content:flex-start;align-items:center;overflow-x:auto;scrollbar-width:none}
+.score-group::-webkit-scrollbar{display:none}
+.score-item{display:flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:38px;padding:0 14px;border-right:1px solid rgba(255,255,255,.08)}
+.score-item:last-child{border-right:none}
+.score-val{font-size:17px;font-weight:600;color:var(--text-1)}
 .score-val.empty{color:var(--text-3)}
 
 /* avg */
-.cell-avg{padding:.9rem 1rem .9rem .5rem;text-align:right}
-.avg-num{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.avg-num.zero{font-size:18px;-webkit-text-fill-color:var(--text-3);background:none;color:var(--text-3)}
-.avg-denom{font-size:11px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
+.cell-avg{padding:.9rem 1rem;text-align:center}
+.avg-num{font-size:26px;font-weight:700;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.avg-num.zero{font-size:20px;-webkit-text-fill-color:var(--text-3);background:none;color:var(--text-3)}
+.avg-denom{font-size:12px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
 
 /* empty */
 .rank-empty{text-align:center;padding:4rem 2rem;color:var(--text-3);font-size:15px;letter-spacing:.06em}
@@ -124,9 +133,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 /* ── BOTTOM SHEET ── */
 .sheet-overlay{
   position:fixed;inset:0;z-index:40;
-  background:rgba(1,8,20,.5);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  opacity:0;pointer-events:none;transition:opacity .28s;
+  background:transparent;
+  opacity:0;pointer-events:none;transition:opacity .1s;
 }
 .sheet-overlay.open{opacity:1;pointer-events:all}
 
@@ -138,7 +146,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   border-radius:var(--r-xl) var(--r-xl) 0 0;
   transform:translateY(100%);
   transition:transform .32s cubic-bezier(.25,.8,.25,1);
-  max-height:85vh;overflow-y:auto;
+  max-height:60vh;overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:var(--text-3) transparent;
 }
 .bottom-sheet.open{transform:translateY(0)}
@@ -147,7 +155,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
 .sheet-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:1.4rem 1.8rem 1rem;
+  padding:1rem 1.8rem .8rem;
 }
 .sheet-athlete-info{display:flex;align-items:center;gap:14px}
 .sheet-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
@@ -156,15 +164,16 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .sheet-close{background:rgba(255,255,255,.08);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;transition:background .15s,color .15s;flex-shrink:0}
 .sheet-close:hover{background:rgba(255,255,255,.15);color:var(--text-1)}
 
-.sheet-body{padding:0 1.8rem 2rem;display:flex;flex-direction:column;gap:1.6rem}
+.sheet-body{padding:0 1.8rem 1.6rem;display:flex;align-items:stretch;gap:14px}
 
-/* score input grid */
-.score-input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-.score-field{display:flex;flex-direction:column;gap:6px}
-.score-field-label{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3)}
+/* score input row */
+.score-input-row{display:flex;gap:12px;flex:1;overflow-x:auto;padding-bottom:6px;
+  scrollbar-width:thin;scrollbar-color:var(--text-3) transparent}
+.score-field{display:flex;flex-direction:column;gap:6px;flex:0 0 86px}
+.score-field-label{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .score-field-input{
   background:rgba(255,255,255,.07);border:none;border-radius:var(--r-md);
-  padding:13px 16px;color:var(--text-1);font-size:17px;font-weight:500;
+  padding:13px 10px;color:var(--text-1);font-size:17px;font-weight:500;
   outline:none;font-family:inherit;text-align:center;
   transition:background .15s;width:100%;
 }
@@ -172,11 +181,11 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .score-field-input::placeholder{color:var(--text-3)}
 
 .submit-btn{
-  width:100%;border:none;border-radius:var(--r-lg);padding:15px;
-  color:#fff;font-size:16px;font-weight:700;letter-spacing:.06em;
+  flex:0 0 auto;align-self:center;border:none;border-radius:var(--r-lg);padding:16px 28px;
+  color:#022019;font-size:15px;font-weight:800;letter-spacing:.06em;white-space:nowrap;
   cursor:pointer;font-family:inherit;
-  background:linear-gradient(135deg,#0a9e78,#1870c8);
-  box-shadow:0 4px 20px rgba(12,190,144,.3);
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  box-shadow:0 4px 22px rgba(20,241,196,.35);
   transition:opacity .15s,transform .1s;
 }
 .submit-btn:hover{opacity:.88}
@@ -202,32 +211,37 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .panel-close:hover{background:rgba(255,255,255,.15);color:var(--text-1)}
 .panel-body{padding:1.4rem 2rem 2.5rem;flex:1;display:flex;flex-direction:column;gap:2.4rem}
 .panel-sec-head{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);margin-bottom:1rem}
-.edit-list{display:flex;flex-direction:column;gap:8px}
-.edit-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border-radius:var(--r-md);padding:12px 14px}
+.edit-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow:hidden;max-height:140px;transition:max-height .35s ease}
+.edit-list.expanded{max-height:1200px}
+.edit-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border-radius:var(--r-md);padding:11px 12px;min-width:0}
 .edit-item-icon{color:var(--text-3);flex-shrink:0;display:flex}
-.edit-item-input{flex:1;background:none;border:none;outline:none;color:var(--text-1);font-size:15px;font-family:inherit;min-width:0}
+.edit-item-input{flex:1;background:none;border:none;outline:none;color:var(--text-1);font-size:14px;font-family:inherit;min-width:0}
 .edit-item-input::placeholder{color:var(--text-3)}
 .edit-item-input:focus{color:var(--teal)}
-.item-del-btn{background:none;border:none;cursor:pointer;color:var(--text-3);transition:color .15s;padding:2px 4px;font-size:15px;line-height:1}
-.item-del-btn:hover{color:var(--danger)}
-.add-row-btn{margin-top:10px;width:100%;background:rgba(12,190,144,.08);border:none;border-radius:var(--r-md);padding:12px;color:var(--teal);font-size:14px;letter-spacing:.08em;cursor:pointer;font-family:inherit;font-weight:500;transition:background .15s}
-.add-row-btn:hover{background:rgba(12,190,144,.15)}
+.toggle-list-btn{margin-top:10px;width:100%;background:none;border:1px dashed rgba(255,255,255,.15);border-radius:var(--r-md);padding:9px;color:var(--text-2);font-size:12px;letter-spacing:.1em;cursor:pointer;font-family:inherit;transition:background .15s,color .15s}
+.toggle-list-btn:hover{background:rgba(255,255,255,.05);color:var(--text-1)}
+.panel-sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.panel-sec-row .panel-sec-head{margin-bottom:0}
+.stepper{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border-radius:50px;padding:5px 8px}
+.stepper button{width:26px;height:26px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--text-1);font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;font-family:inherit}
+.stepper button:hover{background:rgba(255,255,255,.18)}
+.stepper span{font-size:14px;font-weight:700;min-width:18px;text-align:center;color:var(--text-1)}
+.export-row{display:flex;gap:10px}
+.export-row .add-row-btn{flex:1;margin-top:0}
+.add-row-btn{margin-top:10px;width:100%;background:rgba(20,241,196,.1);border:none;border-radius:var(--r-md);padding:12px;color:var(--teal);font-size:14px;letter-spacing:.08em;cursor:pointer;font-family:inherit;font-weight:500;transition:background .15s}
+.add-row-btn:hover{background:rgba(20,241,196,.18)}
 .divider{height:1px;background:rgba(255,255,255,.05)}
-.form-label{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;display:block}
-.form-input{width:100%;background:rgba(255,255,255,.06);border:none;border-radius:var(--r-md);padding:12px 14px;color:var(--text-1);font-size:14px;outline:none;font-family:inherit;transition:background .15s}
-.form-input:focus{background:rgba(255,255,255,.1)}
-.form-input::placeholder{color:var(--text-3)}
-.score-grid-sm{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
-.save-btn{margin-top:4px;width:100%;border:none;border-radius:var(--r-md);padding:13px;color:#fff;font-size:14px;font-weight:600;letter-spacing:.06em;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#0a9e78,#1870c8);transition:opacity .15s}
-.save-btn:hover{opacity:.88}
 
 /* responsive */
 @media(max-width:640px){
   .page{padding:2rem 1rem 8rem}
   .rank-col-head,.rank-row{grid-template-columns:50px 1fr 100px}
   .rch-scores,.cell-scores{display:none}
-  .edit-corner-btn{top:1rem;right:1rem}
-  .score-input-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .site-header{align-items:flex-start;gap:.8rem}
+  .edit-corner-btn{padding:8px 14px;font-size:11px}
+  .score-field{flex:0 0 78px}
+  .sheet-body{padding:0 1rem 1.4rem;gap:10px}
+  .submit-btn{padding:14px 18px}
 }
 @media(max-width:400px){.slide-panel{width:100vw}}
 </style>
@@ -236,25 +250,26 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 <div class="bg-canvas"></div>
 
 <!-- EDIT BTN -->
-<button class="edit-corner-btn" id="editBtn" onclick="openPanel()">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-  管理
-</button>
-
 <div class="page">
   <!-- HEADER -->
   <header class="site-header">
-    <div class="title-wrap" onclick="focusTitle()">
-      <input id="siteTitle" value="Overall Rankings" spellcheck="false" oninput="autoWidth(this)" onblur="autoWidth(this)"/>
-      <span class="title-hint">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </span>
+    <div class="title-block">
+      <div class="title-wrap">
+        <h1 id="siteTitle" contenteditable="true" spellcheck="false" data-placeholder="Overall Rankings">Overall Rankings</h1>
+        <span class="title-hint" onclick="focusTitle()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </span>
+      </div>
+      <div class="header-accent"></div>
     </div>
-    <div class="header-accent"></div>
+    <button class="edit-corner-btn" id="editBtn" onclick="openPanel()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      人員設定
+    </button>
   </header>
 
   <!-- RANKING -->
-  <div>
+  <div class="rank-card">
     <div class="rank-col-head">
       <div class="rch-rank">排名</div>
       <div>選手</div>
@@ -284,8 +299,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
     </button>
   </div>
   <div class="sheet-body">
-    <div class="score-input-grid" id="sheetScoreGrid"></div>
-    <button class="submit-btn" onclick="submitScores()">提交分數</button>
+    <div class="score-input-row" id="sheetScoreGrid"></div>
+    <button class="submit-btn" onclick="submitScores()">提交</button>
   </div>
 </div>
 
@@ -295,47 +310,52 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 <!-- MANAGE PANEL -->
 <div class="slide-panel" id="slidePanel">
   <div class="panel-head">
-    <h2>管理</h2>
+    <h2>人員設定</h2>
     <button class="panel-close" onclick="closePanel()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <div class="panel-body">
     <div>
-      <p class="panel-sec-head">評審列表</p>
-      <div class="edit-list" id="judgeEditList"></div>
-      <button class="add-row-btn" onclick="addJudge()">＋ 新增評審</button>
+      <div class="panel-sec-row">
+        <p class="panel-sec-head">選手列表</p>
+        <div class="stepper">
+          <button onclick="adjustAthletes(-1)">−</button>
+          <span id="athleteCount">10</span>
+          <button onclick="adjustAthletes(1)">＋</button>
+        </div>
+      </div>
+      <div class="edit-list" id="athleteEditList"></div>
+      <button class="toggle-list-btn" id="athleteToggle" onclick="toggleList('athlete')" style="display:none"></button>
     </div>
     <div class="divider"></div>
     <div>
-      <p class="panel-sec-head">選手列表</p>
-      <div class="edit-list" id="athleteEditList"></div>
-      <button class="add-row-btn" onclick="showAddForm()">＋ 新增選手</button>
-    </div>
-    <div id="addAthleteForm" style="display:none">
-      <div class="divider" style="margin-bottom:1.2rem"></div>
-      <p class="panel-sec-head">新增選手</p>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div>
-          <label class="form-label">姓名</label>
-          <input class="form-input" id="newName" placeholder="選手姓名"/>
+      <div class="panel-sec-row">
+        <p class="panel-sec-head">評審列表</p>
+        <div class="stepper">
+          <button onclick="adjustJudges(-1)">−</button>
+          <span id="judgeCount">10</span>
+          <button onclick="adjustJudges(1)">＋</button>
         </div>
-        <button class="save-btn" onclick="addAthlete()">確認新增</button>
+      </div>
+      <div class="edit-list" id="judgeEditList"></div>
+      <button class="toggle-list-btn" id="judgeToggle" onclick="toggleList('judge')" style="display:none"></button>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <p class="panel-sec-head">匯出</p>
+      <div class="export-row">
+        <button class="add-row-btn" onclick="exportHTML()">匯出 HTML</button>
+        <button class="add-row-btn" onclick="exportJPG()">匯出 JPG</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-let judges = ['評審 1','評審 2','評審 3','評審 4','評審 5'];
-let athletes = [
-  {id:1,name:'EPM 1',scores:[null,null,null,null,null]},
-  {id:2,name:'EPM 2',scores:[null,null,null,null,null]},
-  {id:3,name:'EPM 3',scores:[null,null,null,null,null]},
-  {id:4,name:'EPM 4',scores:[null,null,null,null,null]},
-  {id:5,name:'EPM 5',scores:[null,null,null,null,null]},
-];
-let nextId = 6;
+let judges = ['評審 1','評審 2','評審 3','評審 4','評審 5','評審 6','評審 7','評審 8','評審 9','評審 10'];
+let athletes = Array.from({length:10},(_,i)=>({id:i+1,name:'EPM '+(i+1),scores:Array(10).fill(null)}));
+let nextId = 11;
 let activeSheetId = null;
 
 function avg(s){
@@ -344,14 +364,21 @@ function avg(s){
 }
 
 /* title */
-function autoWidth(el){
-  const sp=document.createElement('span');
-  sp.style.cssText='position:absolute;visibility:hidden;white-space:pre;font-size:'+getComputedStyle(el).fontSize+';font-weight:'+getComputedStyle(el).fontWeight+';letter-spacing:'+getComputedStyle(el).letterSpacing+';font-family:'+getComputedStyle(el).fontFamily;
-  sp.textContent=el.value||el.placeholder||'X';
-  document.body.appendChild(sp);el.style.width=(sp.offsetWidth+24)+'px';document.body.removeChild(sp);
+function focusTitle(){
+  const t=document.getElementById('siteTitle');
+  t.focus();
+  const range=document.createRange();
+  range.selectNodeContents(t);
+  range.collapse(false);
+  const sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
 }
-function focusTitle(){const t=document.getElementById('siteTitle');t.focus();t.select();}
-window.addEventListener('load',()=>autoWidth(document.getElementById('siteTitle')));
+document.getElementById('siteTitle').addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault();});
+document.getElementById('siteTitle').addEventListener('paste',e=>{
+  e.preventDefault();
+  document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text').replace(/\n/g,' '));
+});
 
 /* render ranking */
 function rankLabel(r){return r===1?'1st Place':r===2?'2nd Place':r===3?'3rd Place':`${r}th Place`}
@@ -374,7 +401,6 @@ function renderRanking(){
     const isActive=activeSheetId===a.id;
     const scoreItems=a.scores.map((sc,j)=>`
       <div class="score-item">
-        <span class="score-judge-lbl">${judges[j]||'J'+(j+1)}</span>
         <span class="score-val${sc===null||sc===undefined?' empty':''}">${sc!==null&&sc!==undefined?sc.toFixed(1):'—'}</span>
       </div>`).join('');
     const avgHtml=av!==null
@@ -444,61 +470,112 @@ function openPanel(){
   panelOpen=true;
   document.getElementById('slidePanel').classList.add('open');
   document.getElementById('panelOverlay').classList.add('open');
-  document.getElementById('editBtn').classList.add('panel-open');
   renderPanel();
 }
 function closePanel(){
   panelOpen=false;
   document.getElementById('slidePanel').classList.remove('open');
   document.getElementById('panelOverlay').classList.remove('open');
-  document.getElementById('editBtn').classList.remove('panel-open');
 }
 
 function renderPanel(){
+  document.getElementById('judgeCount').textContent=judges.length;
+  document.getElementById('athleteCount').textContent=athletes.length;
   document.getElementById('judgeEditList').innerHTML=judges.map((j,i)=>`
     <div class="edit-item">
       <span class="edit-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
       <input class="edit-item-input" value="${j}" placeholder="評審名稱" onchange="renameJudge(${i},this.value)"/>
-      <button class="item-del-btn" onclick="removeJudge(${i})">✕</button>
     </div>`).join('');
   document.getElementById('athleteEditList').innerHTML=athletes.map(a=>`
     <div class="edit-item">
       <span class="edit-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span>
       <input class="edit-item-input" value="${a.name}" placeholder="選手姓名" onchange="renameAthlete(${a.id},this.value)"/>
-      <button class="item-del-btn" onclick="deleteAthlete(${a.id})">✕</button>
     </div>`).join('');
+
+  updateListCollapse('athlete',athletes.length);
+  updateListCollapse('judge',judges.length);
+}
+
+function updateListCollapse(type,count){
+  const list=document.getElementById(type+'EditList');
+  const btn=document.getElementById(type+'Toggle');
+  if(count>6){
+    btn.style.display='block';
+    btn.textContent=list.classList.contains('expanded')?'收合列表':'顯示完整列表';
+  }else{
+    btn.style.display='none';
+    list.classList.remove('expanded');
+  }
+}
+function toggleList(type){
+  const list=document.getElementById(type+'EditList');
+  list.classList.toggle('expanded');
+  const count=type==='athlete'?athletes.length:judges.length;
+  updateListCollapse(type,count);
 }
 
 function renameJudge(i,v){if(v.trim())judges[i]=v.trim();renderRanking();}
 function renameAthlete(id,v){const a=athletes.find(x=>x.id===id);if(a&&v.trim())a.name=v.trim();renderRanking();}
-function addJudge(){
-  judges.push('評審 '+(judges.length+1));
-  athletes.forEach(a=>a.scores.push(null));
+
+function adjustJudges(delta){
+  if(delta>0){
+    judges.push('評審 '+(judges.length+1));
+    athletes.forEach(a=>a.scores.push(null));
+  }else{
+    if(judges.length<=1){alert('至少需要一位評審');return;}
+    judges.pop();
+    athletes.forEach(a=>a.scores.pop());
+  }
   renderRanking();renderPanel();
 }
-function removeJudge(i){
-  if(judges.length<=1){alert('至少需要一位評審');return;}
-  if(!confirm(`確定移除「${judges[i]}」？`)) return;
-  judges.splice(i,1);athletes.forEach(a=>a.scores.splice(i,1));
+function adjustAthletes(delta){
+  if(delta>0){
+    athletes.push({id:nextId++,name:'EPM '+(athletes.length+1),scores:judges.map(()=>null)});
+  }else{
+    if(athletes.length<=1){alert('至少需要一位選手');return;}
+    const removed=athletes.pop();
+    if(activeSheetId===removed.id) closeSheet();
+  }
   renderRanking();renderPanel();
 }
-function deleteAthlete(id){
-  if(!confirm('確定刪除此選手？')) return;
-  athletes=athletes.filter(a=>a.id!==id);
-  if(activeSheetId===id) closeSheet();
-  renderRanking();renderPanel();
+
+/* ── EXPORT ── */
+function exportHTML(){
+  let html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  html=html.replace(/let judges = \[[^\]]*\];/,'let judges = '+JSON.stringify(judges)+';');
+  html=html.replace(/let athletes = .*?;(\s*\nlet nextId)/s,'let athletes = '+JSON.stringify(athletes)+';$1');
+  html=html.replace(/let nextId = \d+;/,'let nextId = '+nextId+';');
+  html=html.replace(/class="sheet-overlay open" id="sheetOverlay"/,'class="sheet-overlay" id="sheetOverlay"');
+  html=html.replace(/class="bottom-sheet open" id="bottomSheet"/,'class="bottom-sheet" id="bottomSheet"');
+  html=html.replace(/class="panel-overlay open" id="panelOverlay"/,'class="panel-overlay" id="panelOverlay"');
+  html=html.replace(/class="slide-panel open" id="slidePanel"/,'class="slide-panel" id="slidePanel"');
+
+  const blob=new Blob([html],{type:'text/html'});
+  const link=document.createElement('a');
+  link.download=(document.getElementById('siteTitle').textContent.trim()||'ranking')+'.html';
+  link.href=URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
 }
-function showAddForm(){
-  const f=document.getElementById('addAthleteForm');
-  f.style.display=f.style.display==='none'?'block':'none';
+
+function loadScript(src){
+  return new Promise((resolve,reject)=>{
+    if(document.querySelector(`script[src="${src}"]`)){resolve();return;}
+    const s=document.createElement('script');
+    s.src=src;s.onload=resolve;s.onerror=reject;
+    document.head.appendChild(s);
+  });
 }
-function addAthlete(){
-  const n=document.getElementById('newName').value.trim();
-  if(!n){alert('請輸入選手姓名');return;}
-  athletes.push({id:nextId++,name:n,scores:judges.map(()=>null)});
-  document.getElementById('newName').value='';
-  document.getElementById('addAthleteForm').style.display='none';
-  renderRanking();renderPanel();
+async function exportJPG(){
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  closePanel();closeSheet();
+  setTimeout(async()=>{
+    const canvas=await html2canvas(document.body,{backgroundColor:'#020a14',scale:2});
+    const link=document.createElement('a');
+    link.download=(document.getElementById('siteTitle').textContent.trim()||'ranking')+'.jpg';
+    link.href=canvas.toDataURL('image/jpeg',0.95);
+    link.click();
+  },350);
 }
 
 renderRanking();
