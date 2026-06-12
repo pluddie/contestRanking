@@ -104,7 +104,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   line-height:1.2;outline:none;cursor:text;white-space:nowrap;
 }
-[data-theme="light"] #siteTitle{background:linear-gradient(130deg,#1a6dcc 10%,#0abf9a 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
+[data-theme="light"] #siteTitle{background:linear-gradient(130deg,#1a6dcc 10%,#1179fe 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
 #siteTitle:focus{-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
 #siteTitle:empty:before{content:attr(data-placeholder);-webkit-text-fill-color:var(--text-3);background:none}
 .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -234,6 +234,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 /* avg */
 .cell-avg{padding:.5rem 1rem;text-align:center;white-space:nowrap}
 .avg-num{font-size:21px;font-weight:700;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+[data-theme="light"] .avg-num{background:linear-gradient(135deg,#1179fe,#3a8bff);-webkit-background-clip:text;background-clip:text}
 .avg-num.zero{font-size:19px;font-weight:600;-webkit-text-fill-color:var(--text-3);background:none}
 .avg-denom{font-size:11px;color:var(--text-3)}
 .rank-empty{text-align:center;padding:4rem 2rem;color:var(--text-3);font-size:15px}
@@ -298,7 +299,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 [data-theme="light"] .theme-btn{border-color:rgba(58,139,255,.18);background:rgba(58,139,255,.05);color:var(--text-2)}
 .theme-btn.active{border-color:var(--teal);background:rgba(20,241,196,.12);color:var(--teal)}
-[data-theme="light"] .theme-btn.active{background:rgba(20,200,160,.1)}
+[data-theme="light"] .theme-btn.active{border-color:#1179fe;background:rgba(17,121,254,.1);color:#1179fe}
 .theme-btn:hover:not(.active){background:rgba(255,255,255,.1);color:var(--text-1)}
 [data-theme="light"] .theme-btn:hover:not(.active){background:rgba(58,139,255,.1);color:var(--text-1)}
 
@@ -315,6 +316,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 [data-theme="light"] .name-input{background:rgba(255,255,255,.8);border-color:rgba(58,139,255,.22);color:var(--text-1)}
 .name-input:focus{border-color:var(--teal)}
+[data-theme="light"] .name-input:focus{border-color:#1179fe}
 .name-input::placeholder{color:var(--text-3)}
 
 /* judge name list — 2-col, same as athlete grid */
@@ -353,6 +355,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 [data-theme="light"] .toggle-track{background:rgba(58,139,255,.15);border-color:rgba(58,139,255,.25)}
 .toggle-track.on{background:var(--teal);border-color:var(--teal)}
+[data-theme="light"] .toggle-track.on{background:#1179fe;border-color:#1179fe}
 .toggle-knob{
   position:absolute;top:2px;left:2px;
   width:14px;height:14px;border-radius:50%;
@@ -420,8 +423,9 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] .circle{background:rgba(255,255,255,.7);border-color:rgba(58,139,255,.2);color:var(--text-2);box-shadow:0 2px 6px rgba(58,139,255,.08)}
 .circle.athlete{cursor:pointer}
 .circle.athlete:hover{background:rgba(20,241,196,.18);color:var(--teal);border-color:rgba(20,241,196,.45);transform:translateY(-3px)}
-.circle.scored{background:rgba(255,209,102,.18);color:var(--gold);border-color:rgba(255,209,102,.55);box-shadow:0 0 10px rgba(255,209,102,.25)}
-[data-theme="light"] .circle.scored{background:rgba(255,210,0,.35);color:#cc8800;border-color:rgba(255,200,0,.85);box-shadow:0 2px 12px rgba(255,200,0,.45)}
+.circle.scored{background:rgba(255,209,102,.18);color:var(--gold);border-color:rgba(255,209,102,.55)}
+[data-theme="light"] .circle.athlete:hover{background:rgba(17,121,254,.15);color:#1179fe;border-color:rgba(17,121,254,.5)}
+[data-theme="light"] .circle.scored{background:rgba(17,121,254,.15);color:#1179fe;border-color:rgba(17,121,254,.6)}
 
 /* ATHLETE PANEL */
 .athlete-panel{width:100%;position:relative;z-index:2;height:100%;}
@@ -464,6 +468,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] .score-field-input{border-bottom-color:rgba(58,139,255,.2);color:var(--text-1)}
 .score-field-input::-webkit-inner-spin-button,.score-field-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .score-field-input:focus{border-bottom-color:var(--teal);color:var(--teal)}
+[data-theme="light"] .score-field-input:focus{border-bottom-color:#1179fe;color:#1179fe}
 .score-field-input::placeholder{color:var(--text-3)}
 /* error state */
 .score-field.err .score-field-input{border-bottom-color:var(--score-err)!important;color:var(--score-err)!important}
@@ -502,7 +507,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:2rem;
 }
-[data-theme="light"] .podium-title{background:linear-gradient(130deg,#1a6dcc 10%,#0abf9a 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
+[data-theme="light"] .podium-title{background:linear-gradient(130deg,#1a6dcc 10%,#1179fe 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
 .podium-row{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:1.8rem}
 .podium-col{display:flex;flex-direction:column;align-items:center;gap:.7rem;flex:1;min-width:0}
 .podium-names{font-size:14px;font-weight:700;color:#fff;min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;text-align:center;line-height:1.35;word-break:break-word;padding:0 4px}
@@ -517,7 +522,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   border-color:rgba(58,139,255,.2);
   box-shadow:0 20px 80px rgba(58,139,255,.15),inset 0 1px 0 rgba(255,255,255,1);
 }
-[data-theme="light"] .podium-title{color:var(--text-2)}
 [data-theme="light"] .podium-names{color:var(--text-1)}
 
 @media(max-width:640px){
