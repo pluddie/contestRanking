@@ -34,7 +34,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
 /* BG */
 .bg-canvas{position:fixed;inset:0;z-index:0}
-[data-theme="dark"] .bg-canvas,.bg-canvas{
+.bg-canvas{
   background:
     radial-gradient(ellipse 80% 60% at 10% 0%,rgba(58,139,255,.30) 0%,transparent 55%),
     radial-gradient(ellipse 60% 50% at 90% 5%,rgba(20,241,196,.22) 0%,transparent 55%),
@@ -75,7 +75,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   margin-bottom:1.5rem;padding:.65rem 0;
   position:sticky;top:0;z-index:40;
 }
-/* full-viewport-width frosted glass + fade — activated on scroll */
 .site-header::before{
   content:'';
   position:absolute;left:50%;top:0;
@@ -85,10 +84,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   opacity:0;transition:opacity .25s;
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
-  /* fade the blur out smoothly to avoid a hard edge/line artifact */
   -webkit-mask:linear-gradient(to bottom,black 60%,transparent);
   mask:linear-gradient(to bottom,black 60%,transparent);
-  /* dark: subtle dark tint */
   background:rgba(2,10,20,.18);
 }
 [data-theme="light"] .site-header::before{
@@ -143,7 +140,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] .glass-card{box-shadow:0 8px 40px rgba(58,139,255,.12),inset 0 1px 0 rgba(255,255,255,.8)}
 .rank-card{padding:0 0 .5rem;overflow:hidden}
 
-/* column labels are now part of .judge-header-row */
 .jhrow-label{
   font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   color:var(--text-3);padding:9px 0;
@@ -207,7 +203,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .rb-bronze{background:linear-gradient(135deg,rgba(255,159,94,.38),rgba(255,159,94,.1));color:var(--bronze);box-shadow:0 0 12px rgba(255,159,94,.25)}
 .rb-other {background:rgba(255,255,255,.05);color:var(--text-2);font-size:15px}
 [data-theme="light"] .rb-other{background:rgba(58,139,255,.07)}
-/* medal emoji — bigger */
 .medal-icon{font-size:24px;line-height:1;display:block}
 
 /* name */
@@ -389,7 +384,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .bottom-bar{
   position:fixed;left:0;right:0;bottom:0;z-index:50;height:var(--bar-h);
   overflow:hidden;
-  /* Dark mode: bright blue glow blur */
   background:
     linear-gradient(135deg,rgba(20,100,255,.22) 0%,rgba(20,241,196,.10) 60%,rgba(58,139,255,.18) 100%);
   backdrop-filter:blur(20px) saturate(180%) brightness(1.18);
@@ -401,21 +395,19 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
     inset 0 1px 0 rgba(100,180,255,.20);
 }
 [data-theme="light"] .bottom-bar{
-  /* Light mode: soft light-blue blur */
   background:
-    linear-gradient(135deg,rgba(180,220,255,.55) 0%,rgba(210,235,255,.50) 50%,rgba(150,210,255,.45) 100%);
-  backdrop-filter:blur(20px) saturate(160%) brightness(1.08);
-  -webkit-backdrop-filter:blur(20px) saturate(160%) brightness(1.08);
-  border-top:1px solid rgba(100,170,255,.30);
+    linear-gradient(135deg,rgba(100,170,255,.45) 0%,rgba(130,190,255,.40) 50%,rgba(80,155,255,.42) 100%);
+  backdrop-filter:blur(20px) saturate(180%) brightness(1.06);
+  -webkit-backdrop-filter:blur(20px) saturate(180%) brightness(1.06);
+  border-top:1px solid rgba(60,130,255,.40);
   box-shadow:
-    0 -4px 28px rgba(58,139,255,.18),
-    0 -1px 0 rgba(100,170,255,.20),
-    inset 0 1px 0 rgba(255,255,255,.70);
+    0 -4px 28px rgba(58,139,255,.28),
+    0 -1px 0 rgba(80,150,255,.30),
+    inset 0 1px 0 rgba(255,255,255,.60);
 }
 
-.bar-row{display:flex;align-items:center;gap:12px;position:relative}
 .bar-label{flex-shrink:0;min-width:48px;margin-right:12px}
-.bar-label-text{font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.bar-label-text{font-size:17px;font-weight:700;color:#fff}
 [data-theme="light"] .bar-label-text{color:#0a1e36}
 .bar-circles{display:flex;gap:7px;overflow-x:auto;flex:0 1 auto;padding:5px 2px 2px;scrollbar-width:none}
 .bar-circles::-webkit-scrollbar{display:none}
@@ -503,7 +495,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
 }
 .podium-title{
-  font-size:clamp(1rem,3vw,1.5rem);font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:clamp(1rem,3vw,1.5rem);font-weight:700;letter-spacing:.12em;
   background:linear-gradient(130deg,#eef4ff 20%,var(--teal) 75%,var(--blue) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:2rem;
@@ -512,8 +504,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .podium-row{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:1.8rem}
 .podium-col{display:flex;flex-direction:column;align-items:center;gap:.7rem;flex:1;min-width:0}
 .podium-names{font-size:14px;font-weight:700;color:#fff;min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;text-align:center;line-height:1.35;word-break:break-word;padding:0 4px}
-.podium-name-tag{white-space:nowrap}
-/* no grey-out for empty podium spots */
 .podium-col.empty .podium-names{color:var(--text-3)}
 .podium-bar{width:100%;border-radius:var(--r-md) var(--r-md) 0 0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800}
 .podium-col.first  .podium-bar{height:128px;background:linear-gradient(180deg,rgba(255,209,102,.28),rgba(255,209,102,.06));color:var(--gold);box-shadow:0 0 32px rgba(255,209,102,.25),inset 0 1px 0 rgba(255,209,102,.45);border:1px solid rgba(255,209,102,.30)}
@@ -530,7 +520,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
 @media(max-width:640px){
   :root{--bar-h:72px}
-  /* fixed header — bg handled by .scrolled class */
   .site-header{
     position:fixed;top:0;left:0;right:0;z-index:40;
     margin-bottom:0;padding:.6rem 1rem;
@@ -554,12 +543,9 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   .bar-label{min-width:40px}
   .score-field{flex:0 0 56px}
   .settings-card{padding:1.4rem}
-  /* mobile: ap-row reverts to flex, padding handled inline */
   .ap-row{display:flex;align-items:center;gap:10px;grid-template-columns:unset}
   .ap-name{padding-left:0;min-width:60px;max-width:110px;flex-shrink:0}
   .ap-scores{flex:1}
-  .ap-submit{flex-shrink:0}
-  /* mobile: rank grid = rank | name | avg */
   .rank-row,.judge-header-row{grid-template-columns:42px 1fr auto!important}
   .cell-avg{padding:.5rem .8rem .5rem .4rem;text-align:right}
   .cell-name{font-size:14px}
@@ -688,7 +674,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
-  <div id="rosterView" style="position:absolute;inset:0;display:flex;align-items:center;padding:.6rem 1.4rem;">
+  <div id="rosterView" style="position:absolute;inset:0;display:flex;align-items:center;padding:.6rem 2rem;">
     <div class="bar-label"><span class="bar-label-text">評分區</span></div>
     <div class="bar-circles" id="athleteCircles"></div>
   </div>
@@ -784,7 +770,7 @@ function badgeContent(rank,hasScore){
   return medalMap[rank]||`<span style="font-size:15px;font-weight:800">${rank}</span>`;
 }
 
-function gridCols(){return '42px 1fr 6fr 110px'}
+function gridCols(){return '42px 1fr 6fr 88px'}
 
 // ── COMBINED HEADER ROW (col labels + judge names in one row) ──
 function renderJudgeHeader(){
@@ -872,7 +858,6 @@ function alignAthletePanel(){
   const cardRect = card.getBoundingClientRect();
   const barRect  = document.querySelector('.bottom-bar').getBoundingClientRect();
 
-  // ap-page-wrap: same left/width as glass-card, relative to bottom-bar
   apWrap.style.cssText =
     `position:absolute;left:${cardRect.left - barRect.left}px;width:${cardRect.width}px;top:0;height:100%;display:flex;align-items:center;`;
 
