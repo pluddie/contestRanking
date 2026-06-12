@@ -256,9 +256,9 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 .settings-body{
   flex:1;overflow-y:auto;min-height:0;
-  scrollbar-width:thin;scrollbar-color:var(--text-3) transparent;
-  padding-right:2px;
+  scrollbar-width:none;
 }
+.settings-body::-webkit-scrollbar{display:none}
 [data-theme="light"] .settings-card{
   background:linear-gradient(160deg,rgba(255,255,255,.98),rgba(232,244,255,.99));
   border-color:rgba(58,139,255,.22);
@@ -306,8 +306,19 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 /* name grid 2-col */
 .name-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:5px;
-  max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--text-3) transparent;
+  max-height:240px;overflow-y:auto;scrollbar-width:none;
 }
+.name-grid::-webkit-scrollbar{display:none}
+.name-grid.collapsed .name-row:nth-child(n+4),.judge-name-grid.collapsed .name-row:nth-child(n+4){display:none}
+.list-expand-btn{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  width:100%;margin-top:8px;padding:4px;border:none;background:none;
+  color:var(--text-3);font-size:11px;font-family:inherit;cursor:pointer;
+  transition:color .15s;
+}
+.list-expand-btn:hover{color:var(--text-2)}
+.list-expand-btn svg{transition:transform .2s}
+.list-expand-btn.open svg{transform:rotate(180deg)}
 .name-row{display:flex;align-items:center;gap:5px}
 .name-idx{font-size:11px;color:var(--text-3);min-width:16px;text-align:right;font-weight:700}
 .name-input{
@@ -547,7 +558,9 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   .bottom-bar{padding:.5rem 1rem}
   .bar-label{min-width:40px}
   .score-field{flex:0 0 56px}
-  .settings-card{padding:1.4rem}
+  .settings-overlay{padding:.75rem}
+  .settings-card{padding:1.4rem;width:100%;max-width:100%;overflow-x:hidden}
+  .name-grid,.judge-name-grid{grid-template-columns:1fr}
   .ap-row{display:flex;align-items:center;gap:10px;grid-template-columns:unset}
   .ap-name{padding-left:0;min-width:60px;max-width:110px;flex-shrink:0}
   .ap-scores{flex:1}
@@ -1014,24 +1027,56 @@ function openSettings(){
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open')}
 function onSettingsOverlayClick(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings()}
 
+function isMobileView(){return window.innerWidth<=640}
+
 function rebuildAthleteList(){
-  document.getElementById('settingsNameList').innerHTML=
-    Array.from({length:tmpAthleteCount},(_,i)=>{
-      const a=athletes[i];
-      const val=a?a.name:'EPM '+(i+1);
-      const aid=a?a.id:'new_'+i;
-      return `<div class="name-row"><span class="name-idx">${i+1}</span>
-        <input class="name-input" id="sn_${aid}" data-idx="${i}" value="${val}" placeholder="選手 ${i+1}" maxlength="20"/></div>`;
-    }).join('');
+  const mobile=isMobileView();
+  const collapsed=mobile&&tmpAthleteCount>3;
+  const grid=document.getElementById('settingsNameList');
+  grid.className='name-grid'+(collapsed?' collapsed':'');
+  grid.innerHTML=Array.from({length:tmpAthleteCount},(_,i)=>{
+    const a=athletes[i];
+    const val=a?a.name:'EPM '+(i+1);
+    const aid=a?a.id:'new_'+i;
+    return `<div class="name-row"><span class="name-idx">${i+1}</span>
+      <input class="name-input" id="sn_${aid}" data-idx="${i}" value="${val}" placeholder="選手 ${i+1}" maxlength="20"/></div>`;
+  }).join('');
+  const old=grid.nextElementSibling;
+  if(old&&old.classList.contains('list-expand-btn'))old.remove();
+  if(collapsed){
+    const btn=document.createElement('button');
+    btn.className='list-expand-btn';
+    btn.innerHTML='View More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>';
+    btn.onclick=()=>{
+      grid.classList.toggle('collapsed');
+      btn.classList.toggle('open',!grid.classList.contains('collapsed'));
+    };
+    grid.after(btn);
+  }
 }
 
 function rebuildJudgeList(){
-  document.getElementById('settingsJudgeList').innerHTML=
-    Array.from({length:tmpJudgeCount},(_,i)=>{
-      const val=tmpJudgeNames[i]||(i<judges.length?judges[i]:'評審'+(i+1));
-      return `<div class="name-row"><span class="name-idx">${i+1}</span>
-        <input class="name-input" id="sjn_${i}" data-jidx="${i}" value="${val}" placeholder="評審 ${i+1}" maxlength="16"/></div>`;
-    }).join('');
+  const mobile=isMobileView();
+  const collapsed=mobile&&tmpJudgeCount>3;
+  const grid=document.getElementById('settingsJudgeList');
+  grid.className='judge-name-grid'+(collapsed?' collapsed':'');
+  grid.innerHTML=Array.from({length:tmpJudgeCount},(_,i)=>{
+    const val=tmpJudgeNames[i]||(i<judges.length?judges[i]:'評審'+(i+1));
+    return `<div class="name-row"><span class="name-idx">${i+1}</span>
+      <input class="name-input" id="sjn_${i}" data-jidx="${i}" value="${val}" placeholder="評審 ${i+1}" maxlength="16"/></div>`;
+  }).join('');
+  const old=grid.nextElementSibling;
+  if(old&&old.classList.contains('list-expand-btn'))old.remove();
+  if(collapsed){
+    const btn=document.createElement('button');
+    btn.className='list-expand-btn';
+    btn.innerHTML='View More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>';
+    btn.onclick=()=>{
+      grid.classList.toggle('collapsed');
+      btn.classList.toggle('open',!grid.classList.contains('collapsed'));
+    };
+    grid.after(btn);
+  }
 }
 
 function settingsAdjustAthletes(d){
