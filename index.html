@@ -542,7 +542,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
     background:transparent;
   }
   .judge-header-row{background:transparent;border-bottom:none}
-  .rch-scores,.cell-scores,.judge-header-cells{display:none!important}
+  .rch-scores,.cell-scores:not(.ap-scores),.judge-header-cells{display:none!important}
   .settle-btn{padding:8px 14px;font-size:11px}
   .bottom-bar{padding:.5rem 1rem}
   .bar-label{min-width:40px}
@@ -551,6 +551,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   .ap-row{display:flex;align-items:center;gap:10px;grid-template-columns:unset}
   .ap-name{padding-left:0;min-width:60px;max-width:110px;flex-shrink:0}
   .ap-scores{flex:1}
+  .ap-submit-wrap{flex-shrink:0;padding:.5rem .8rem}
   .rank-row,.judge-header-row{grid-template-columns:42px 1fr auto!important}
   .cell-avg{padding:.5rem .8rem .5rem .4rem;text-align:right}
   .cell-name{font-size:14px}
@@ -855,7 +856,7 @@ function alignAthletePanel(){
 
   const isMobile = window.innerWidth <= 640;
   if(isMobile){
-    apWrap.style.cssText = '';
+    apWrap.style.cssText = 'width:100%;';
     apRow.style.cssText = 'display:flex;align-items:center;gap:10px;padding:0 1rem;width:100%;box-sizing:border-box;';
     return;
   }
@@ -1122,7 +1123,7 @@ function openPodium(){
     document.getElementById('siteTitle').textContent.trim()||'Overall Rankings';
   const ranked=getRanked();
   const groups={1:[],2:[],3:[]};
-  ranked.forEach(({athlete:a,rank:r})=>{if(r<=3)groups[r].push(a.name)});
+  ranked.forEach(({athlete:a,rank:r,avg:av})=>{if(r<=3&&av!==null)groups[r].push(a.name)});
   const icon={1:'🥇',2:'🥈',3:'🥉'};
   const cls={1:'first',2:'second',3:'third'};
   document.getElementById('podiumRow').innerHTML=[2,1,3].map(r=>`
