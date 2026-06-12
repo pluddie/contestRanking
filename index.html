@@ -55,11 +55,44 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 @keyframes blobdrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,18px) scale(1.05)}}
 
 /* LAYOUT */
-.page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:2.5rem 2rem;padding-bottom:calc(var(--bar-h) + 3.5rem)}
+.page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 2rem;padding-bottom:calc(var(--bar-h) + 3.5rem)}
 
 /* HEADER */
-.site-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;padding-top:.5rem}
-.title-block{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.site-header{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin-bottom:1.5rem;padding:.65rem 0;
+  position:sticky;top:0;z-index:40;
+}
+/* full-viewport-width frosted glass + fade — activated on scroll */
+.site-header::before{
+  content:'';
+  position:absolute;left:50%;top:0;
+  width:100vw;transform:translateX(-50%);
+  height:calc(100% + 40px); /* extend below for gradient tail */
+  pointer-events:none;z-index:-1;
+  opacity:0;transition:opacity .25s;
+  background:linear-gradient(
+    to bottom,
+    rgba(var(--fade-color),.72) 0%,
+    rgba(var(--fade-color),.72) 65%,
+    transparent 100%
+  );
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  /* clip backdrop to header area only */
+  -webkit-mask:linear-gradient(to bottom,black 65%,transparent 100%);
+  mask:linear-gradient(to bottom,black 65%,transparent 100%);
+}
+.site-header.scrolled::before{opacity:1}
+[data-theme="light"] .site-header::before{
+  background:linear-gradient(
+    to bottom,
+    rgba(238,246,255,.78) 0%,
+    rgba(238,246,255,.78) 65%,
+    transparent 100%
+  );
+}
+.title-block{display:flex;align-items:center;gap:12px;min-width:0}
 .title-wrap{display:inline-flex;align-items:center;gap:10px;max-width:100%}
 .title-wrap:hover .title-hint{opacity:1}
 .title-hint{flex-shrink:0;opacity:0;transition:opacity .2s;display:flex;cursor:pointer}
@@ -73,7 +106,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] #siteTitle{background:linear-gradient(130deg,#1a6dcc 10%,#0abf9a 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
 #siteTitle:focus{-webkit-text-fill-color:var(--text-1);background:none;color:var(--text-1)}
 #siteTitle:empty:before{content:attr(data-placeholder);-webkit-text-fill-color:var(--text-3);background:none}
-.header-accent{width:60px;height:3px;margin:.7rem 0 0;border-radius:2px;background:linear-gradient(90deg,var(--teal),var(--blue))}
+.header-accent{width:3px;height:28px;border-radius:2px;background:linear-gradient(180deg,var(--teal),var(--blue));flex-shrink:0}
 .header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 
 .icon-btn{
@@ -105,25 +138,41 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   box-shadow:0 12px 50px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.07);
 }
 [data-theme="light"] .glass-card{box-shadow:0 8px 40px rgba(58,139,255,.12),inset 0 1px 0 rgba(255,255,255,.8)}
-.rank-card{padding:.6rem 0 .4rem;overflow:hidden}
+.rank-card{padding:0 0 .5rem;overflow:hidden}
 
-/* JUDGE HEADER ROW — top of score columns, rendered dynamically */
-.judge-header-row{
-  display:grid;padding:0 1.4rem;
-  border-bottom:1px solid rgba(255,255,255,.07);
+/* column labels are now part of .judge-header-row */
+.jhrow-label{
+  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text-3);padding:9px 0;
 }
-[data-theme="light"] .judge-header-row{border-bottom-color:rgba(58,139,255,.12)}
-.jhrow-spacer{} /* rank + name spacers */
+.rch-rank{text-align:center}
+.rch-name{padding-left:1rem;padding-right:0}
+.rch-avg{text-align:center}
+
+/* JUDGE HEADER ROW */
+.judge-header-row{
+  display:grid;padding:0 1.4rem;align-items:center;
+  background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.09);
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+}
+[data-theme="light"] .judge-header-row{
+  background:rgba(58,139,255,.06);
+  border-bottom-color:rgba(58,139,255,.14);
+}
 .judge-header-cells{display:flex;flex-wrap:nowrap;overflow:hidden}
 .judge-header-item{
-  flex:1 1 0;min-width:34px;max-width:56px;padding:6px 5px 5px;
+  flex:1 1 0;min-width:44px;max-width:72px;padding:9px 5px;
   font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--text-3);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   border-right:1px solid rgba(255,255,255,.07);
 }
-[data-theme="light"] .judge-header-item{border-right-color:rgba(0,0,0,.06);color:var(--text-3)}
+[data-theme="light"] .judge-header-item{border-right-color:rgba(0,0,0,.06)}
 .judge-header-item:last-child{border-right:none}
-.jhrow-avg{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);text-align:center;padding:6px 0 5px}
+.jhrow-avg{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-3);text-align:center;padding:9px 0;
+}
 
 /* ROWS */
 .rank-list{position:relative}
@@ -171,7 +220,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .score-group::-webkit-scrollbar{display:none}
 .score-item{
   display:flex;align-items:center;justify-content:center;
-  flex:1 1 0;min-width:34px;max-width:56px;padding:4px 5px;
+  flex:1 1 0;min-width:44px;max-width:72px;padding:4px 5px;
   border-right:1px solid rgba(255,255,255,.07);
 }
 [data-theme="light"] .score-item{border-right-color:rgba(0,0,0,.07)}
@@ -216,7 +265,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   border-color:rgba(58,139,255,.22);
   box-shadow:0 20px 80px rgba(58,139,255,.18),inset 0 1px 0 rgba(255,255,255,1);
 }
-[data-theme="light"] .settings-body{scrollbar-color:var(--text-3) transparent}
 .settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem;flex-shrink:0}
 .settings-title{font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-1)}
 .settings-close{
@@ -301,6 +349,15 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 .settings-save:hover{opacity:.88}
 .settings-save:active{transform:scale(.98)}
+.settings-export{
+  width:100%;padding:9px;border:1px solid rgba(255,255,255,.14);border-radius:var(--r-md);
+  background:rgba(255,255,255,.05);color:var(--text-2);
+  font-size:13px;font-weight:700;font-family:inherit;letter-spacing:.06em;
+  cursor:pointer;transition:background .15s,color .15s;margin-top:.5rem;flex-shrink:0;
+}
+[data-theme="light"] .settings-export{border-color:rgba(58,139,255,.25);background:rgba(58,139,255,.07);color:var(--text-2)}
+.settings-export:hover{background:rgba(255,255,255,.12);color:var(--text-1)}
+[data-theme="light"] .settings-export:hover{background:rgba(58,139,255,.15);color:var(--text-1)}
 
 /* BOTTOM BAR */
 .bottom-bar{
@@ -311,7 +368,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   padding:.6rem 1.4rem;display:flex;flex-direction:column;justify-content:center;
   overflow:hidden;
 }
-[data-theme="dark"] .bottom-bar,.bottom-bar{background:rgba(2,10,20,.92)}
+.bottom-bar{background:rgba(2,10,20,.92)}
 [data-theme="light"] .bottom-bar{background:rgba(220,238,255,.94);border-top-color:rgba(58,139,255,.2);box-shadow:0 -8px 40px rgba(100,160,230,.2)}
 .bottom-bar::before{
   content:'';position:absolute;left:0;right:0;bottom:100%;height:90px;
@@ -319,7 +376,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   background:linear-gradient(to bottom,transparent,rgba(var(--fade-color),1));
 }
 
-.bar-row{display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+.bar-row{display:flex;align-items:center;gap:12px;position:relative}
 .bar-label{flex-shrink:0;min-width:48px}
 .bar-label-text{font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff}
 [data-theme="light"] .bar-label-text{color:#0a1e36}
@@ -345,7 +402,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 }
 [data-theme="light"] .ap-back{background:rgba(58,139,255,.1)}
 .ap-back:hover{background:rgba(255,255,255,.18);color:var(--text-1)}
-.ap-name{flex-shrink:0;font-size:15px;font-weight:700;color:var(--text-1);min-width:60px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ap-name{flex-shrink:0;font-size:15px;font-weight:700;color:var(--text-1);min-width:80px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ap-scores{flex:1;overflow-x:auto;scrollbar-width:none}
 .ap-scores::-webkit-scrollbar{display:none}
 .ap-submit{flex-shrink:0}
@@ -397,7 +454,13 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   box-shadow:0 20px 80px rgba(20,241,196,.1),inset 0 1px 0 rgba(255,255,255,.15);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
 }
-.podium-title{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,230,255,.85);margin-bottom:2.2rem}
+.podium-title{
+  font-size:clamp(1rem,3vw,1.5rem);font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(130deg,#eef4ff 20%,var(--teal) 75%,var(--blue) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:2rem;
+}
+[data-theme="light"] .podium-title{background:linear-gradient(130deg,#1a6dcc 10%,#0abf9a 55%,#3a8bff 100%);-webkit-background-clip:text;background-clip:text}
 .podium-row{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:1.8rem}
 .podium-col{display:flex;flex-direction:column;align-items:center;gap:.7rem;flex:1;min-width:0}
 .podium-names{font-size:14px;font-weight:700;color:#fff;min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;text-align:center;line-height:1.35;word-break:break-word;padding:0 4px}
@@ -408,22 +471,43 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 .podium-col.first  .podium-bar{height:128px;background:linear-gradient(180deg,rgba(255,209,102,.22),rgba(255,209,102,.05));color:var(--gold);box-shadow:0 0 24px rgba(255,209,102,.18),inset 0 1px 0 rgba(255,209,102,.35);border:1px solid rgba(255,209,102,.22)}
 .podium-col.second .podium-bar{height:96px;background:linear-gradient(180deg,rgba(200,218,255,.16),rgba(200,218,255,.04));color:var(--silver);box-shadow:0 0 18px rgba(200,218,255,.12),inset 0 1px 0 rgba(200,218,255,.28);border:1px solid rgba(200,218,255,.16)}
 .podium-col.third  .podium-bar{height:70px;background:linear-gradient(180deg,rgba(255,159,94,.2),rgba(255,159,94,.04));color:var(--bronze);box-shadow:0 0 18px rgba(255,159,94,.15),inset 0 1px 0 rgba(255,159,94,.3);border:1px solid rgba(255,159,94,.2)}
-.podium-close{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:50px;padding:11px 32px;color:#fff;font-size:13px;letter-spacing:.1em;cursor:pointer;font-family:inherit;transition:background .15s}
-.podium-close:hover{background:rgba(255,255,255,.2)}
+[data-theme="light"] .podium-overlay{background:rgba(200,225,255,.35)}
+[data-theme="light"] .podium-card{
+  background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(230,244,255,.98));
+  border-color:rgba(58,139,255,.2);
+  box-shadow:0 20px 80px rgba(58,139,255,.15),inset 0 1px 0 rgba(255,255,255,1);
+}
+[data-theme="light"] .podium-title{color:var(--text-2)}
+[data-theme="light"] .podium-names{color:var(--text-1)}
 
-/* RESPONSIVE */
 @media(max-width:640px){
   :root{--bar-h:72px}
-  .page{padding:1.5rem 1rem;padding-bottom:calc(var(--bar-h) + 3.5rem)}
-  .rch-scores,.cell-scores,.judge-header-cells,.jhrow-spacer-scores{display:none!important}
-  .judge-header-row{display:none}
-  .cell-name{font-size:14px}
+  /* fixed header — bg handled by .scrolled class */
+  .site-header{
+    position:fixed;top:0;left:0;right:0;z-index:40;
+    margin-bottom:0;padding:.6rem 1rem;
+    border-bottom:none;
+  }
+  .page{
+    padding:0;
+    padding-top:calc(56px + .5rem);
+    padding-bottom:calc(var(--bar-h) + .5rem);
+    display:flex;flex-direction:column;height:100dvh;
+  }
+  .glass-card.rank-card{
+    flex:1;overflow-y:auto;border-radius:0;border-left:none;border-right:none;
+    margin:0;
+  }
+  .rch-scores,.cell-scores,.judge-header-cells{display:none!important}
   .settle-btn{padding:8px 14px;font-size:11px}
   .bottom-bar{padding:.5rem 1rem}
   .bar-label{min-width:40px}
   .score-field{flex:0 0 56px}
   .settings-card{padding:1.4rem}
-  .name-grid,.judge-name-grid{grid-template-columns:1fr}
+  /* mobile: rank grid = rank | name | avg */
+  .rank-row,.judge-header-row{grid-template-columns:42px 1fr auto!important}
+  .cell-avg{padding:.5rem .8rem .5rem .4rem;text-align:right}
+  .cell-name{font-size:14px}
 }
 @media(max-width:400px){
   .header-actions{gap:6px}
@@ -437,13 +521,13 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 <div class="page">
   <header class="site-header">
     <div class="title-block">
+      <div class="header-accent"></div>
       <div class="title-wrap">
         <h1 id="siteTitle" contenteditable="true" spellcheck="false" data-placeholder="Overall Rankings">Overall Rankings</h1>
         <span class="title-hint" onclick="focusTitle()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </span>
       </div>
-      <div class="header-accent"></div>
     </div>
     <div class="header-actions">
       <button class="icon-btn" onclick="openSettings()" aria-label="設定">
@@ -517,22 +601,22 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
     </div><!-- end settings-body -->
 
     <button class="settings-save" onclick="saveSettings()">儲存</button>
+    <button class="settings-export" onclick="exportHTML()">匯出 HTML</button>
   </div>
 </div>
 
 <!-- PODIUM -->
 <div class="podium-overlay" id="podiumOverlay" onclick="closePodium(event)">
   <div class="podium-card">
-    <p class="podium-title">🏆 Final Results</p>
+    <p class="podium-title" id="podiumTitle"></p>
     <div class="podium-row" id="podiumRow"></div>
-    <button class="podium-close" onclick="closePodium()">關閉</button>
   </div>
 </div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
   <div id="rosterView" style="display:flex;align-items:center;gap:12px;width:100%;position:relative;z-index:2">
-    <div class="bar-label"><span class="bar-label-text">選手</span></div>
+    <div class="bar-label"><span class="bar-label-text">評分區</span></div>
     <div class="bar-circles" id="athleteCircles"></div>
   </div>
   <div id="athletePanel" class="athlete-panel" style="display:none">
@@ -548,7 +632,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 </div>
 
 <script>
-// ── STATE ──
+function fmt(v,d){const s=v.toFixed(d);return s.includes('.')?s.replace(/\.?0+$/,''):s}
 let judges = Array.from({length:10},(_,i)=>'評審'+(i+1));
 let athletes = Array.from({length:10},(_,i)=>({id:i+1,name:'EPM '+(i+1),scores:Array(10).fill(null)}));
 let nextId = 11;
@@ -614,34 +698,32 @@ function badgeCls(rank,hasScore){
 }
 function badgeContent(rank,hasScore){
   if(!hasScore) return '<span style="font-size:16px">—</span>';
-  // Use styled SVG-based numbers for top 3 — large, coloured
-  const medalMap={
-    1:'<span class="medal-icon">🥇</span>',
-    2:'<span class="medal-icon">🥈</span>',
-    3:'<span class="medal-icon">🥉</span>',
-  };
+  const medalMap={1:'<span class="medal-icon">🥇</span>',2:'<span class="medal-icon">🥈</span>',3:'<span class="medal-icon">🥉</span>'};
   return medalMap[rank]||`<span style="font-size:15px;font-weight:800">${rank}</span>`;
 }
 
-// ── GRID TEMPLATE — shared between header and rows ──
-function gridCols(){
-  // 42px rank | 1fr name | 4fr scores | 100px avg
-  return '42px 1fr 4fr 100px';
-}
+function gridCols(){return '42px 1fr 6fr 110px'}
 
-// ── JUDGE HEADER ──
+// ── COMBINED HEADER ROW (col labels + judge names in one row) ──
 function renderJudgeHeader(){
   const container=document.getElementById('judgeHeaderRow');
-  if(!showJudgeHeader){container.className='';container.innerHTML='';return;}
   const cols=gridCols();
-  const cells=judges.map(j=>`<div class="judge-header-item">${j}</div>`).join('');
   container.className='judge-header-row';
   container.style.gridTemplateColumns=cols;
-  container.innerHTML=`
-    <div></div>
-    <div></div>
-    <div class="judge-header-cells" style="overflow:hidden;padding:.0rem .5rem 0">${cells}</div>
-    <div class="jhrow-avg"></div>`;
+  if(showJudgeHeader){
+    const cells=judges.map(j=>`<div class="judge-header-item">${j}</div>`).join('');
+    container.innerHTML=`
+      <div class="jhrow-label rch-rank">排名</div>
+      <div class="jhrow-label rch-name">選手</div>
+      <div class="judge-header-cells" style="overflow:hidden;padding:0 .5rem">${cells}</div>
+      <div class="jhrow-label jhrow-avg rch-avg">平均</div>`;
+  } else {
+    container.innerHTML=`
+      <div class="jhrow-label rch-rank">排名</div>
+      <div class="jhrow-label rch-name">選手</div>
+      <div></div>
+      <div class="jhrow-label jhrow-avg rch-avg">平均</div>`;
+  }
 }
 
 // ── RENDER RANKING ──
@@ -652,10 +734,10 @@ function buildRow(a,rank,av,animCls,delay){
   const trimmed=trimmedIndices(a.scores);
   const scoreItems=a.scores.map((sc,j)=>`
     <div class="score-item${trimmed.has(j)?' trimmed':''}">
-      <span class="score-val${sc===null?' empty':''}">${sc!==null?sc.toFixed(1):'—'}</span>
+      <span class="score-val${sc===null?' empty':''}">${sc!==null?fmt(sc,1):'—'}</span>
     </div>`).join('');
   const avgHtml=hasScore
-    ?`<span class="avg-num">${av.toFixed(2)}</span><span class="avg-denom">/10</span>`
+    ?`<span class="avg-num">${fmt(av,2)}</span><span class="avg-denom">/10</span>`
     :`<span class="avg-num zero">—</span>`;
   return `<div class="rank-row${animCls}" style="grid-template-columns:${gridCols()};animation-delay:${delay}ms">
     <div class="cell-rank"><div class="rank-badge ${bc}">${bc2}</div></div>
@@ -820,7 +902,6 @@ function settingsAdjustAthletes(d){
 function settingsAdjustJudges(d){
   tmpJudgeCount=Math.max(1,tmpJudgeCount+d);
   document.getElementById('settingsJudgeCount').textContent=tmpJudgeCount;
-  // save current names before rebuild
   document.querySelectorAll('[data-jidx]').forEach(el=>{tmpJudgeNames[+el.dataset.jidx]=el.value});
   rebuildJudgeList();
 }
@@ -867,9 +948,38 @@ function saveSettings(){
   closeSettings();
 }
 
+// ── EXPORT ──
+function exportHTML(){
+  // Bake current state into a clone of this document
+  const clone=document.documentElement.cloneNode(true);
+  // Update the inline state variables in the script tag
+  const scripts=clone.querySelectorAll('script');
+  scripts.forEach(s=>{
+    if(s.textContent.includes('let judges')){
+      s.textContent=s.textContent
+        .replace(/let judges\s*=\s*[^;]+;/,`let judges=${JSON.stringify(judges)};`)
+        .replace(/let athletes\s*=\s*[^;]+;/,`let athletes=${JSON.stringify(athletes)};`)
+        .replace(/let nextId\s*=\s*[^;]+;/,`let nextId=${nextId};`)
+        .replace(/let currentTheme\s*=\s*[^;]+;/,`let currentTheme=${JSON.stringify(currentTheme)};`)
+        .replace(/let showJudgeHeader\s*=\s*[^;]+;/,`let showJudgeHeader=${showJudgeHeader};`)
+        .replace(/setTheme\('dark'\)/,`setTheme(${JSON.stringify(currentTheme)})`);
+    }
+  });
+  // Update title
+  clone.querySelector('#siteTitle').textContent=document.getElementById('siteTitle').textContent;
+  const html='<!DOCTYPE html>\n'+clone.outerHTML;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  a.download='rankings_export.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 // ── PODIUM ──
 function openPodium(){
   launchConfetti();
+  document.getElementById('podiumTitle').textContent=
+    document.getElementById('siteTitle').textContent.trim()||'Overall Rankings';
   const ranked=getRanked();
   const groups={1:[],2:[],3:[]};
   ranked.forEach(({athlete:a,rank:r})=>{if(r<=3)groups[r].push(a.name)});
@@ -914,6 +1024,17 @@ function launchConfetti(){
     if(f<160)requestAnimationFrame(draw);else canvas.remove();
   })();
 }
+
+// ── HEADER SCROLL BLUR ──
+(function(){
+  const hdr=document.querySelector('.site-header');
+  function check(scrollTop){hdr.classList.toggle('scrolled',scrollTop>10)}
+  // desktop: window scroll
+  window.addEventListener('scroll',()=>check(window.scrollY),{passive:true});
+  // mobile: rank-card inner scroll
+  const card=document.querySelector('.glass-card.rank-card');
+  if(card) card.addEventListener('scroll',()=>check(card.scrollTop),{passive:true});
+})();
 
 // ── INIT ──
 setTheme('dark');
