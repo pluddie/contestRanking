@@ -290,18 +290,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] .inline-stepper button:hover{background:rgba(58,139,255,.18)}
 .inline-stepper span{font-size:14px;font-weight:700;min-width:20px;text-align:center;color:var(--text-1)}
 
-.theme-toggle{display:flex;gap:8px}
-.theme-btn{
-  flex:1;padding:9px 8px;border-radius:var(--r-md);
-  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
-  color:var(--text-2);font-size:13px;font-weight:600;font-family:inherit;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;
-}
-[data-theme="light"] .theme-btn{border-color:rgba(58,139,255,.18);background:rgba(58,139,255,.05);color:var(--text-2)}
-.theme-btn.active{border-color:var(--teal);background:rgba(20,241,196,.12);color:var(--teal)}
-[data-theme="light"] .theme-btn.active{border-color:#1179fe;background:rgba(17,121,254,.1);color:#1179fe}
-.theme-btn:hover:not(.active){background:rgba(255,255,255,.1);color:var(--text-1)}
-[data-theme="light"] .theme-btn:hover:not(.active){background:rgba(58,139,255,.1);color:var(--text-1)}
 
 /* name grid 2-col */
 .name-grid{
@@ -618,14 +606,13 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 
     <div class="settings-body">
     <div class="settings-section">
-      <div class="settings-section-label" style="margin-bottom:.7rem">外觀模式</div>
-      <div class="theme-toggle">
-        <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>深色
-        </button>
-        <button class="theme-btn" id="btnLight" onclick="setTheme('light')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>淺色
-        </button>
+      <div class="settings-section-header">
+        <span class="settings-section-label">外觀模式</span>
+        <label class="toggle-switch" onclick="setTheme(currentTheme==='dark'?'light':'dark')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3)"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <div class="toggle-track" id="themeToggleTrack"><div class="toggle-knob"></div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3)"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </label>
       </div>
     </div>
 
@@ -974,8 +961,8 @@ function submitAthletePanel(){
 function setTheme(t){
   currentTheme=t;
   document.documentElement.setAttribute('data-theme',t);
-  document.getElementById('btnDark').classList.toggle('active',t==='dark');
-  document.getElementById('btnLight').classList.toggle('active',t==='light');
+  const track=document.getElementById('themeToggleTrack');
+  if(track) track.classList.toggle('on',t==='light');
 }
 
 // ── BACKGROUND IMAGE ──
