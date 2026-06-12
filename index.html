@@ -234,8 +234,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 /* avg */
 .cell-avg{padding:.5rem 1rem;text-align:center;white-space:nowrap}
 .avg-num{font-size:21px;font-weight:700;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.avg-num.zero{font-size:19px;font-weight:600;-webkit-text-fill-color:var(--text-3);background:none;color:var(--text-3)}
-.avg-denom{font-size:11px;color:var(--text-3);-webkit-text-fill-color:var(--text-3)}
+.avg-num.zero{font-size:19px;font-weight:600;-webkit-text-fill-color:var(--text-3);background:none}
+.avg-denom{font-size:11px;color:var(--text-3)}
 .rank-empty{text-align:center;padding:4rem 2rem;color:var(--text-3);font-size:15px}
 
 /* ── SETTINGS MODAL ── */
@@ -245,7 +245,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   background:rgba(0,0,0,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   opacity:0;pointer-events:none;transition:opacity .22s;
 }
-.settings-overlay.open{opacity:1;pointer-events:all}
+.settings-overlay.open{opacity:1;pointer-events:auto}
 .settings-card{
   background:linear-gradient(160deg,rgba(5,14,34,.97),rgba(2,9,22,.98));
   border:1px solid rgba(255,255,255,.13);border-radius:var(--r-xl);
@@ -420,6 +420,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
 [data-theme="light"] .circle{background:rgba(255,255,255,.7);border-color:rgba(58,139,255,.2);color:var(--text-2);box-shadow:0 2px 6px rgba(58,139,255,.08)}
 .circle.athlete{cursor:pointer}
 .circle.athlete:hover{background:rgba(20,241,196,.18);color:var(--teal);border-color:rgba(20,241,196,.45);transform:translateY(-3px)}
+.circle.scored{background:rgba(255,209,102,.18);color:var(--gold);border-color:rgba(255,209,102,.55);box-shadow:0 0 10px rgba(255,209,102,.25)}
+[data-theme="light"] .circle.scored{background:rgba(255,210,0,.35);color:#cc8800;border-color:rgba(255,200,0,.85);box-shadow:0 2px 12px rgba(255,200,0,.45)}
 
 /* ATHLETE PANEL */
 .athlete-panel{width:100%;position:relative;z-index:2;height:100%;}
@@ -486,7 +488,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .25s;padding:2rem;
 }
-.podium-overlay.open{opacity:1;pointer-events:all}
+.podium-overlay.open{opacity:1;pointer-events:auto}
 .podium-card{
   background:linear-gradient(160deg,rgba(20,241,196,.11),rgba(58,139,255,.09),rgba(124,106,255,.07));
   border:1px solid rgba(255,255,255,.2);border-radius:var(--r-xl);
@@ -523,7 +525,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
   .site-header{
     position:fixed;top:0;left:0;right:0;z-index:40;
     margin-bottom:0;padding:.6rem 1rem;
-    border-bottom:none;
   }
   .page{
     padding:0;
@@ -836,7 +837,10 @@ function renderRanking(animate){
 // ── RENDER BAR ──
 function renderBar(){
   document.getElementById('athleteCircles').innerHTML=
-    athletes.map((a,i)=>`<div class="circle athlete" onclick="openAthletePanel(${a.id})">${i+1}</div>`).join('');
+    athletes.map((a,i)=>{
+      const scored=a.scores.some(x=>x!==null);
+      return `<div class="circle athlete${scored?' scored':''}" onclick="openAthletePanel(${a.id})">${i+1}</div>`;
+    }).join('');
 }
 
 // ── ALIGN PANEL TO TABLE ──
@@ -944,6 +948,7 @@ function submitAthletePanel(){
     a.scores[i]=raw===''?null:Math.min(10,Math.max(0,parseFloat(raw)));
   });
   renderRanking(true);
+  renderBar();
   closeAthletePanel();
 }
 
