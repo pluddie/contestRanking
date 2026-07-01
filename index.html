@@ -661,6 +661,17 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;color:var(--text-1);min-heigh
         </div>
       </div>
     </div>
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <span class="settings-section-label">本機暫存（僅存於此瀏覽器）</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="bgimg-btn" onclick="saveLocalTemp()">本機暫存</button>
+        <button class="bgimg-btn" onclick="loadLocalTemp()">讀取暫存</button>
+        <button class="bgimg-btn danger" onclick="resetLocalTemp()">重置暫存</button>
+      </div>
+      <div id="localTempStatus" style="font-size:11px;color:var(--text-3,#888);margin-top:6px"></div>
+    </div>
     </div><!-- end settings-body -->
 
     <div class="settings-footer">
@@ -1009,6 +1020,7 @@ function openSettings(){
   document.getElementById('settingsJudgeCount').textContent=tmpJudgeCount;
   syncJudgeToggleUI();
   applyBgImage();
+  refreshLocalTempStatus();
   document.getElementById('settingsOverlay').classList.add('open');
 }
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open')}
@@ -1120,6 +1132,78 @@ function saveSettings(){
   closeSettings();
 }
 
+// ── LOCAL TEMP STORAGE (browser-only, manual save/load/reset) ──
+// Nothing here runs automatically. Data is only written to localStorage
+// when the user clicks "本機暫存", and only read back when the user clicks
+// "讀取暫存" — a normal refresh does NOT auto-restore it.
+const LOCAL_TEMP_KEY='contestRanking_local_temp_v1';
+function localTempStatusText(){
+  try{
+    const raw=localStorage.getItem(LOCAL_TEMP_KEY);
+    if(!raw) return '目前沒有本機暫存資料。';
+    const snap=JSON.parse(raw);
+    return snap.savedAt?('上次本機暫存時間：'+new Date(snap.savedAt).toLocaleString()):'已有本機暫存資料。';
+  }catch(e){ return '目前沒有本機暫存資料。'; }
+}
+function refreshLocalTempStatus(){
+  const el=document.getElementById('localTempStatus');
+  if(el) el.textContent=localTempStatusText();
+}
+function saveLocalTemp(){
+  try{
+    const snapshot={
+      siteTitle:document.getElementById('siteTitle').textContent,
+      judges, athletes, nextId, currentTheme, showJudgeHeader, bgImage,
+      savedAt:new Date().toISOString()
+    };
+    localStorage.setItem(LOCAL_TEMP_KEY,JSON.stringify(snapshot));
+    pageDirty=false;
+    refreshLocalTempStatus();
+    alert('已存入本機暫存');
+  }catch(e){ console.error(e); alert('本機暫存失敗'); }
+}
+function loadLocalTemp(){
+  const raw=localStorage.getItem(LOCAL_TEMP_KEY);
+  if(!raw){ alert('尚未有本機暫存資料'); return; }
+  if(!confirm('讀取本機暫存將覆蓋目前畫面上尚未儲存的內容，確定要讀取嗎？')) return;
+  try{
+    const snap=JSON.parse(raw);
+    judges=snap.judges||judges;
+    athletes=snap.athletes||athletes;
+    nextId=snap.nextId||nextId;
+    currentTheme=snap.currentTheme||currentTheme;
+    showJudgeHeader=(snap.showJudgeHeader!==undefined)?snap.showJudgeHeader:showJudgeHeader;
+    bgImage=(snap.bgImage!==undefined)?snap.bgImage:bgImage;
+    if(snap.siteTitle) document.getElementById('siteTitle').textContent=snap.siteTitle;
+    setTheme(currentTheme);
+    renderJudgeHeader();
+    renderRanking(false);
+    renderBar();
+    applyBgImage();
+    pageDirty=false;
+    closeSettings();
+    alert('已讀取本機暫存（'+(snap.savedAt?new Date(snap.savedAt).toLocaleString():'')+'）');
+  }catch(e){ console.error(e); alert('讀取失敗，暫存資料可能已損毀'); }
+}
+function resetLocalTemp(){
+  if(!localStorage.getItem(LOCAL_TEMP_KEY)){ alert('目前沒有本機暫存資料'); return; }
+  if(!confirm('確定要清除本機暫存資料嗎？此動作無法復原（目前畫面上的內容不受影響）。')) return;
+  localStorage.removeItem(LOCAL_TEMP_KEY);
+  refreshLocalTempStatus();
+  alert('已清除本機暫存資料');
+}
+
+// ── CLOSE / REFRESH WARNING ──
+// This app doesn't track fine-grained "dirty" state per edit, so we warn
+// unconditionally once the page has finished loading — saving to local
+// temp or exporting HTML clears the flag until the page reloads again.
+let pageDirty=true;
+window.addEventListener('beforeunload',e=>{
+  if(!pageDirty) return;
+  e.preventDefault();
+  e.returnValue='';
+});
+
 // ── EXPORT ──
 function exportHTML(){
   // Bake current state into a clone of this document
@@ -1146,6 +1230,7 @@ function exportHTML(){
   a.download='rankings_export.html';
   a.click();
   URL.revokeObjectURL(a.href);
+  pageDirty=false;
 }
 
 // ── PODIUM ──
